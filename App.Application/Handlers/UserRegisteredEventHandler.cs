@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using App.Domain.Events;
+using App.Application.Interfaces;
 
 namespace App.Application.Handlers
 {

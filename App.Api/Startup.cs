@@ -10,6 +10,8 @@ using App.Domain.Repositories;
 using App.Domain.Services;
 using App.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using App.Domain.Events;
+using App.Infrastructure.Events;
 
 namespace App.Api
 {
@@ -75,8 +77,8 @@ namespace App.Api
             });
 
             // Đăng ký các Event Handlers với EventBus
-            //eventBus.Subscribe<UserRegisteredEvent, UserRegisteredEventHandler>();
-            //eventBus.Subscribe<UserDeletedEvent, UserDeletedEventHandler>();
+            eventBus.Subscribe<UserRegisteredEvent, UserRegisteredEventHandler>();
+            eventBus.Subscribe<UserDeletedEvent, UserDeletedEventHandler>();
         }
     }
 }

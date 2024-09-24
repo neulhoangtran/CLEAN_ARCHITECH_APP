@@ -16,7 +16,7 @@ namespace App.Infrastructure.Events
             _serviceProvider = serviceProvider;
         }
 
-        public void Publish<TEvent>(TEvent @event) where TEvent : class
+        public async Task Publish<TEvent>(TEvent @event) where TEvent : class
         {
             var eventType = @event.GetType();
             if (_handlers.TryGetValue(eventType, out var handlerTypes))
@@ -26,11 +26,12 @@ namespace App.Infrastructure.Events
                     var handlerInstance = _serviceProvider.GetService(handlerType) as IEventHandler<TEvent>;
                     if (handlerInstance != null)
                     {
-                        handlerInstance.Handle(@event).Wait();
+                        await handlerInstance.Handle(@event); // Sử dụng await để gọi phương thức Handle
                     }
                 }
             }
         }
+
 
         public void Subscribe<TEvent, THandler>()
             where TEvent : class

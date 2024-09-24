@@ -39,7 +39,7 @@ namespace App.Infrastructure.Persistence
                 // Thiết lập quan hệ giữa User và UserProfile (1-1)
                 entity.HasOne(e => e.UserProfile)
                       .WithOne()
-                      .HasForeignKey<UserProfile>(e => e.UserId); // UserProfile sẽ có khóa ngoại UserId
+                      .HasForeignKey<UserProfile>(e => e.Id); // UserProfile sẽ có khóa ngoại UserId
             });
 
             // Cấu hình cho thực thể Role

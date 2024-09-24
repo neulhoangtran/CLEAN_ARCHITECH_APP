@@ -1,6 +1,7 @@
 ﻿using App.Domain.Entities;
 using App.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace App.Infrastructure.Persistence
 {
@@ -13,36 +14,28 @@ namespace App.Infrastructure.Persistence
             _context = context;
         }
 
-        public User GetById(int id)
+        public async Task<User> GetByIdAsync(int id)
         {
-            return _context.Users.Find(id);
-        }
-
-        public User GetByUsername(string username)
-        {
-            return _context.Users.FirstOrDefault(u => u.Username == username);
+            return await _context.Users.FindAsync(id);
         }
 
         public void Add(User user)
         {
             _context.Users.Add(user);
-            _context.SaveChanges();
         }
 
         public void Update(User user)
         {
             _context.Users.Update(user);
-            _context.SaveChanges();
         }
 
-        public void Delete(int id)
+        public async Task SaveChangesAsync()
         {
-            var user = _context.Users.Find(id);
-            if (user != null)
-            {
-                _context.Users.Remove(user);
-                _context.SaveChanges();
-            }
+            await _context.SaveChangesAsync();
+        }
+        public User GetByUsername(string username)
+        {
+            return _context.Users.FirstOrDefault(u => u.Username == username);
         }
     }
 }

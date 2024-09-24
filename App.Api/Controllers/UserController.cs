@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using App.Application.Interfaces;
-using App.Application.DTOs;
-using App.Api.Models;
-using Microsoft.AspNetCore.Identity.Data;
+using App.Application.Interfaces;   // Sử dụng các interface từ Application layer
+using App.Application.DTOs;        // Sử dụng các Data Transfer Object từ Application layer
+using ApiLoginRequest = App.Api.Models.LoginRequest; // Alias cho LoginRequest từ App.Api.Models
+using App.Api.Models; // Alias cho LoginRequest từ App.Api.Models
+using Microsoft.AspNetCore.Identity.Data; // Đảm bảo không dùng tên LoginRequest từ Microsoft.AspNetCore.Identity.Data
 
 namespace App.Api.Controllers
 {
@@ -28,7 +29,7 @@ namespace App.Api.Controllers
                 {
                     Username = request.Username,
                     Email = request.Email,
-                    PasswordHash = request.Password, // Giả sử password đã được hash
+                    PasswordHash = request.Password, // Giả sử password đã được hash trong service
                     Role = request.Role
                 };
 
@@ -43,7 +44,7 @@ namespace App.Api.Controllers
 
         // Đăng nhập người dùng
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
+        public IActionResult Login([FromBody] ApiLoginRequest request) // Sử dụng alias ApiLoginRequest để tránh nhầm lẫn
         {
             try
             {

@@ -4,7 +4,7 @@ using App.Domain.Entities;
 using App.Domain.Events;
 using App.Domain.Repositories;
 using App.Domain.Services;
-using App.Domain.Events;
+using System.Threading.Tasks;
 
 namespace App.Application.Services
 {
@@ -12,7 +12,7 @@ namespace App.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly UserDomainService _userDomainService;
-        private readonly IEventBus _eventBus; // Thêm EventBus
+        private readonly IEventBus _eventBus;
 
         public UserService(IUserRepository userRepository, UserDomainService userDomainService, IEventBus eventBus)
         {
@@ -29,14 +29,14 @@ namespace App.Application.Services
             var user = new User(userDto.Username, userDto.Email, userDto.PasswordHash, userDto.Role);
             _userRepository.Add(user);
 
-            // Phát sự kiện UserRegisteredEvent
             var userRegisteredEvent = new UserRegisteredEvent(user.Id, user.Username, user.Email);
-            _eventBus.Publish(userRegisteredEvent); // Publish sự kiện
+            _eventBus.Publish(userRegisteredEvent);
         }
 
-        public UserDto GetUserById(int userId)
+        // Thêm phương thức GetUserById
+        public async Task<UserDto> GetUserById(int userId)
         {
-            var user = _userRepository.GetById(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
             if (user == null) return null;
 
             return new UserDto
@@ -49,9 +49,10 @@ namespace App.Application.Services
             };
         }
 
-        public void UpdateUser(int userId, UserDto userDto)
+        // Thêm phương thức UpdateUser
+        public async Task UpdateUser(int userId, UserDto userDto)
         {
-            var user = _userRepository.GetById(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
                 throw new Exception("User not found");
 
@@ -60,24 +61,42 @@ namespace App.Application.Services
             user.Role = userDto.Role;
 
             _userRepository.Update(user);
+            await _userRepository.SaveChangesAsync();
 
-            // Phát sự kiện UserUpdatedEvent
             var userUpdatedEvent = new UserUpdatedEvent(user.Id, user.Email);
-            _eventBus.Publish(userUpdatedEvent); // Publish sự kiện
+            _eventBus.Publish(userUpdatedEvent);
         }
 
-        public void DeleteUser(int userId)
+        // Thêm phương thức Login
+        public async Task<UserDto> Login(string username, string password)
         {
-            var user = _userRepository.GetById(userId);
+            var user = _userRepository.GetByUsername(username);
+            if (user == null || user.PasswordHash != password) // Giả sử so sánh trực tiếp, nên hash mật khẩu trước
+            {
+                return null;
+            }
+
+            return new UserDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                Role = user.Role
+            };
+        }
+
+        public async Task DeleteUser(int userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
                 throw new Exception("User not found");
 
-            user.Deactivate(); // Chuyển trạng thái người dùng sang không hoạt động
+            user.Deactivate();
             _userRepository.Update(user);
+            await _userRepository.SaveChangesAsync();
 
-            // Phát sự kiện UserDeletedEvent
             var userDeletedEvent = new UserDeletedEvent(user.Id);
-            _eventBus.Publish(userDeletedEvent); // Publish sự kiện
+            _eventBus.Publish(userDeletedEvent);
         }
     }
 }
