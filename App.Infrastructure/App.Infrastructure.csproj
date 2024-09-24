@@ -24,7 +24,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\App.Api\App.Api.csproj" />
   </ItemGroup>
 
 </Project>
