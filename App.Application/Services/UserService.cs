@@ -2,6 +2,7 @@
 using App.Application.Interfaces;
 using App.Domain.Entities;
 using App.Domain.Events;
+using App.Domain.Events.User;
 using App.Domain.Repositories;
 using App.Domain.Services;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace App.Application.Services
             if (!_userDomainService.IsUsernameUnique(userDto.Username))
                 throw new Exception("Username already exists");
 
-            var user = new User(userDto.Username, userDto.Email, userDto.PasswordHash, userDto.Role);
+            var user = new User(userDto.Username, userDto.EmployeeId, userDto.Email, userDto.PasswordHash, userDto.Role);
             _userRepository.Add(user);
 
             var userRegisteredEvent = new UserRegisteredEvent(user.Id, user.Username, user.Email);
@@ -43,6 +44,7 @@ namespace App.Application.Services
             {
                 Id = user.Id,
                 Username = user.Username,
+                EmployeeId = user.EmployeeId,
                 Email = user.Email,
                 Role = user.Role,
                 IsActive = user.IsActive

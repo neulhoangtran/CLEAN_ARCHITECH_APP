@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using App.Domain.Events;
 using App.Application.Interfaces;
+using App.Domain.Events.User;
 
 namespace App.Application.Handlers
 {
