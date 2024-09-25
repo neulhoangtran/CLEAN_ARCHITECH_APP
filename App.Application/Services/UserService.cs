@@ -30,7 +30,7 @@ namespace App.Application.Services
             var user = new User(userDto.Username, userDto.EmployeeId, userDto.Email, userDto.PasswordHash, userDto.Role);
             _userRepository.Add(user);
 
-            var userRegisteredEvent = new UserRegisteredEvent(user.Id, user.Username, user.Email);
+            var userRegisteredEvent = new UserRegisteredEvent(user.ID, user.Username, user.Email);
             _eventBus.Publish(userRegisteredEvent);
         }
 
@@ -42,7 +42,7 @@ namespace App.Application.Services
 
             return new UserDto
             {
-                Id = user.Id,
+                ID = user.ID,
                 Username = user.Username,
                 EmployeeId = user.EmployeeId,
                 Email = user.Email,
@@ -65,7 +65,7 @@ namespace App.Application.Services
             _userRepository.Update(user);
             await _userRepository.SaveChangesAsync();
 
-            var userUpdatedEvent = new UserUpdatedEvent(user.Id, user.Email);
+            var userUpdatedEvent = new UserUpdatedEvent(user.ID, user.Email);
             _eventBus.Publish(userUpdatedEvent);
         }
 
@@ -80,7 +80,7 @@ namespace App.Application.Services
 
             return new UserDto
             {
-                Id = user.Id,
+                ID = user.ID,
                 Username = user.Username,
                 Email = user.Email,
                 Role = user.Role
@@ -97,7 +97,7 @@ namespace App.Application.Services
             _userRepository.Update(user);
             await _userRepository.SaveChangesAsync();
 
-            var userDeletedEvent = new UserDeletedEvent(user.Id);
+            var userDeletedEvent = new UserDeletedEvent(user.ID);
             _eventBus.Publish(userDeletedEvent);
         }
     }
