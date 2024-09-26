@@ -63,7 +63,7 @@ namespace App.Api
             // Cấu hình Swagger
             app.UseSwagger();
             app.UseSwaggerUI(c => {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "MySolution API V1");
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "APP API V1");
             });
 
             app.UseHttpsRedirection();
@@ -77,8 +77,8 @@ namespace App.Api
             });
 
             // Đăng ký các Event Handlers với EventBus
-            eventBus.Subscribe<UserRegisteredEvent, UserRegisteredEventHandler>();
-            eventBus.Subscribe<UserDeletedEvent, UserDeletedEventHandler>();
+            //eventBus.Subscribe<UserRegisteredEvent, UserRegisteredEventHandler>();
+            //eventBus.Subscribe<UserDeletedEvent, UserDeletedEventHandler>();
         }
     }
 }

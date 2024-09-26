@@ -7,10 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Events\Role\" />
     <Folder Include="ValueObjects\" />
-  </ItemGroup>
-
-  <ItemGroup>
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,4 @@
-﻿namespace App.Domain.Events
+﻿namespace App.Domain.Events.User
 {
     public class UserRegisteredEvent
     {

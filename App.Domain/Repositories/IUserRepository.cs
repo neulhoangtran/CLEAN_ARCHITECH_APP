@@ -7,6 +7,8 @@ namespace App.Domain.Repositories
     {
         Task<User> GetByIdAsync(int id);
         User GetByUsername(string username);
+        Task<User> GetByUsernameAsync(string username);
+        Task<User> GetByEmailAsync(string email);
         void Add(User user);
         void Update(User user);
         Task SaveChangesAsync(); 

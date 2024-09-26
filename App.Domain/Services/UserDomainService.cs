@@ -26,9 +26,9 @@ namespace App.Domain.Services
         }
 
         // Thay đổi vai trò của người dùng
-        public void ChangeUserRole(int userId, string newRole)
+        public async void ChangeUserRole(int userId, string newRole)
         {
-            var user = _userRepository.GetById(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
                 throw new Exception("User not found");
 

@@ -27,10 +27,15 @@ namespace App.Api.Controllers
             {
                 var userDto = new UserDto
                 {
+
                     Username = request.Username,
                     Email = request.Email,
                     PasswordHash = request.Password, // Giả sử password đã được hash trong service
-                    Role = request.Role
+                    Role = request.Role,
+                    //PhoneNumber = request.PhoneNumber,
+                    //FullName = request.FullName,
+                    //Address = request.Address
+
                 };
 
                 _userService.RegisterUser(userDto);
