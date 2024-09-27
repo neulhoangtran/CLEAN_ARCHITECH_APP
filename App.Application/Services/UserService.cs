@@ -27,7 +27,7 @@ namespace App.Application.Services
             if (!_userDomainService.IsUsernameUnique(userDto.Username))
                 throw new Exception("Username already exists");
 
-            var user = new User(userDto.Username, userDto.EmployeeId, userDto.Email, userDto.PasswordHash, userDto.Role);
+            var user = new User(userDto.Username, userDto.EmployeeId, userDto.Email, userDto.PasswordHash, userDto.Status);
             _userRepository.Add(user);
 
             var userRegisteredEvent = new UserRegisteredEvent(user.ID, user.Username, user.Email);
@@ -46,8 +46,7 @@ namespace App.Application.Services
                 Username = user.Username,
                 EmployeeId = user.EmployeeId,
                 Email = user.Email,
-                Role = user.Role,
-                IsActive = user.IsActive
+                Status = user.Status
             };
         }
 
@@ -60,7 +59,6 @@ namespace App.Application.Services
 
             user.UpdateUserProfile(new UserProfile(userDto.FullName, userDto.Address, userDto.PhoneNumber));
             user.Email = userDto.Email;
-            user.Role = userDto.Role;
 
             _userRepository.Update(user);
             await _userRepository.SaveChangesAsync();
@@ -83,7 +81,6 @@ namespace App.Application.Services
                 ID = user.ID,
                 Username = user.Username,
                 Email = user.Email,
-                Role = user.Role
             };
         }
 

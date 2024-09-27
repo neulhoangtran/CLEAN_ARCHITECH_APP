@@ -24,7 +24,7 @@ namespace App.Infrastructure.Persistence
 
         public Role GetByName(string name)
         {
-            return _context.Roles.FirstOrDefault(r => r.Name == name);
+            return _context.Roles.FirstOrDefault(r => r.RoleName == name);
         }
 
         public void Add(Role role)
@@ -53,7 +53,7 @@ namespace App.Infrastructure.Persistence
         // Thêm phương thức Delete với tham số string theo interface
         public void Delete(string roleName)
         {
-            var role = _context.Roles.FirstOrDefault(r => r.Name == roleName);
+            var role = _context.Roles.FirstOrDefault(r => r.RoleName == roleName);
             if (role != null)
             {
                 _context.Roles.Remove(role);

@@ -10,6 +10,7 @@
     <Folder Include="Identity\" />
     <Folder Include="Messaging\" />
     <Folder Include="Configurations\" />
+    <Folder Include="Migrations\" />
     <Folder Include="Services\" />
   </ItemGroup>
 

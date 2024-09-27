@@ -33,7 +33,7 @@ namespace App.Api.Controllers
                     Username = request.Username,
                     Email = request.Email,
                     PasswordHash = request.Password, // Giả sử password đã được hash trong service
-                    Role = request.Role,
+                    //Role = request.Role,
                     //PhoneNumber = request.PhoneNumber,
                     //FullName = request.FullName,
                     //Address = request.Address
@@ -102,7 +102,6 @@ namespace App.Api.Controllers
                     Address = request.Address,
                     PhoneNumber = request.PhoneNumber,
                     Email = request.Email,
-                    Role = request.Role
                 };
 
                 _userService.UpdateUser(id, userDto);

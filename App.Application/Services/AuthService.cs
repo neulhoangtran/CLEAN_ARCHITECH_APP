@@ -46,7 +46,7 @@ namespace App.Application.Services
             var refreshToken = _tokenService.GenerateRefreshToken();
 
             // Lưu Refresh Token vào cơ sở dữ liệu
-            var tokenEntity = new Token(refreshToken, "RefreshToken", DateTime.UtcNow.AddDays(7), user.ID);
+            var tokenEntity = new Token(user.ID, refreshToken, "RefreshToken", DateTime.UtcNow.AddDays(7));
             await _tokenRepository.AddAsync(tokenEntity);
             await _tokenRepository.SaveChangesAsync();
 
@@ -78,7 +78,6 @@ namespace App.Application.Services
                 ID = user.ID,
                 Username = user.Username,
                 Email = user.Email,
-                Role = user.Role
             };
         }
 
@@ -144,7 +143,7 @@ namespace App.Application.Services
             }
 
             // Lấy thông tin người dùng
-            var user = await _userRepository.GetByIdAsync(storedToken.UserId);
+            var user = await _userRepository.GetByIdAsync(storedToken.UserID);
             if (user == null)
             {
                 return null; // Người dùng không tồn tại

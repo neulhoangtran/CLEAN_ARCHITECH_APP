@@ -5,9 +5,8 @@
         public string Username { get; set; }
         public string EmployeeId { get; set; }
         public string Email { get; set; }
-        public string PasswordHash { get; private set; }
-        public string Role { get; set; }
-        public bool IsActive { get; private set; }
+        public string PasswordHash { get; set; }
+        public UserStatus Status { get; set; }
 
         // Navigation properties
         public ICollection<UserRole> UserRoles { get; set; } // Quan hệ với bảng UserRole
@@ -15,15 +14,15 @@
         public UserProfile UserProfile { get; set; } // Quan hệ 1-1 với UserProfile
 
         // Constructor cho đăng ký người dùng mới
-        public User(string username,string EmployeeId, string email, string passwordHash, string role)
+        public User() { }
+        public User(string username,string EmployeeId, string email, string passwordHash, UserStatus status)
         {
             //UserId = Guid.NewGuid();
             Username = username;
             EmployeeId = EmployeeId;
-            Email = email;
             PasswordHash = passwordHash;
-            Role = role;
-            IsActive = true;
+            Email = email;
+            Status = UserStatus.Active;
         }
 
         // Phương thức cập nhật thông tin người dùng
@@ -35,7 +34,7 @@
         // Phương thức vô hiệu hóa người dùng
         public void Deactivate()
         {
-            IsActive = false;
+            Status = UserStatus.Inactive;
         }
 
         // Phương thức cập nhật mật khẩu

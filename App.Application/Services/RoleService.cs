@@ -23,7 +23,7 @@ namespace App.Application.Services
             return roles.Select(r => new RoleDto
             {
                 ID = r.ID,
-                Name = r.Name
+                Name = r.RoleName
             }).ToList();
         }
 
@@ -35,7 +35,7 @@ namespace App.Application.Services
             return new RoleDto
             {
                 ID = role.ID,
-                Name = role.Name
+                Name = role.RoleName
             };
         }
 
@@ -46,7 +46,7 @@ namespace App.Application.Services
 
             var role = new Role
             {
-                Name = roleName
+                RoleName = roleName
             };
             _roleRepository.Add(role);
             //_roleRepository.SaveChanges();
@@ -58,7 +58,7 @@ namespace App.Application.Services
             if (role == null)
                 throw new Exception("Role not found");
 
-            role.Name = roleName;
+            role.RoleName = roleName;
             _roleRepository.Update(role);
             //_roleRepository.SaveChanges();
         }

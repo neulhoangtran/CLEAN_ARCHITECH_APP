@@ -27,12 +27,12 @@ namespace App.Application.Services
             // Tạo các claims (yêu cầu) chứa thông tin người dùng
             var claims = new[]
             {
-            new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-            new Claim("EmployeeId", user.EmployeeId), // Thêm EmployeeId
-            //new Claim(ClaimTypes.Role, user.Role),    // Thêm Role
-            new Claim("IpAddress", userProfile?.IPAddress ?? "N/A"), // Thêm IpAddress, kiểm tra null
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-        };
+                new Claim(JwtRegisteredClaimNames.Sub, user.Username),
+                new Claim("EmployeeId", user.EmployeeId), // Thêm EmployeeId
+                //new Claim(ClaimTypes.Role, user.Role),    // Thêm Role
+                //new Claim("IpAddress", userProfile?.IPAddress ?? "N/A"), // Thêm IpAddress, kiểm tra null
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
 
             // Khóa bí mật và thông tin ký tên
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -57,7 +57,7 @@ namespace App.Application.Services
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Username),
                 new Claim("EmployeeId", user.EmployeeId),
-                new Claim("IpAddress", userProfile?.IPAddress ?? "N/A"), // Thêm IpAddress, kiểm tra null
+                //new Claim("IpAddress", userProfile?.IPAddress ?? "N/A"), // Thêm IpAddress, kiểm tra null
                 //new Claim(ClaimTypes.Role, user.Role),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };

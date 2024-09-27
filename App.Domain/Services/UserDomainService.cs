@@ -35,7 +35,7 @@ namespace App.Domain.Services
             if (!RoleExists(newRole))
                 throw new Exception("Role not found");
 
-            user.Role = newRole;
+            //user.Role = newRole;
             _userRepository.Update(user);
         }
     }

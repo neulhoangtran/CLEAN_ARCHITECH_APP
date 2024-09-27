@@ -3,6 +3,8 @@ using App.Domain.Entities;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Text;
+using System.Security.Cryptography;
 
 namespace App.Infrastructure.Persistence
 {
@@ -11,19 +13,19 @@ namespace App.Infrastructure.Persistence
         // Định nghĩa các DbSet cho các thực thể
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<UserProfile> UserProfiles { get; set; }
-        public DbSet<Token> Tokens { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Token> Tokens { get; set; }
 
         // Constructor nhận vào DbContextOptions để cấu hình kết nối
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
+
         }
 
-        // Cấu hình các thực thể trong phương thức OnModelCreating
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -33,17 +35,14 @@ namespace App.Infrastructure.Persistence
             {
                 if (typeof(BaseEntity).IsAssignableFrom(entityType.ClrType))
                 {
-                    // Cấu hình ID tự tăng
                     modelBuilder.Entity(entityType.ClrType)
                         .Property<int>("ID")
                         .ValueGeneratedOnAdd();
 
-                    // Thiết lập giá trị mặc định cho CreatedAt
                     modelBuilder.Entity(entityType.ClrType)
                         .Property<DateTime>("CreatedAt")
-                        .HasDefaultValueSql("GETUTCDATE()"); // Sử dụng GETUTCDATE() cho thời gian hiện tại UTC
+                        .HasDefaultValueSql("GETUTCDATE()");
 
-                    // Thiết lập giá trị mặc định cho UpdatedAt
                     modelBuilder.Entity(entityType.ClrType)
                         .Property<DateTime>("UpdatedAt")
                         .HasDefaultValueSql("GETUTCDATE()");
@@ -58,102 +57,165 @@ namespace App.Infrastructure.Persistence
                 entity.HasIndex(e => e.Username)
                       .IsUnique(); // Đảm bảo Username là duy nhất
 
+                entity.Property(e => e.Username)
+                      .IsRequired()
+                      .HasMaxLength(100);
+
                 entity.Property(e => e.Email)
                       .IsRequired()
-                      .HasMaxLength(100); // Đặt điều kiện cho cột Email
+                      .HasMaxLength(100);
+
+                entity.Property(e => e.PasswordHash)
+                      .IsRequired();
+
+                entity.Property(e => e.Status)
+                      .HasDefaultValue(UserStatus.Active);
 
                 // Thiết lập quan hệ giữa User và UserProfile (1-1)
                 entity.HasOne(e => e.UserProfile)
                       .WithOne(up => up.User)
-                      .HasForeignKey<UserProfile>(e => e.UserID); // UserProfile sẽ có khóa ngoại UserID
-            });
-
-            // Cấu hình cho thực thể Role
-            modelBuilder.Entity<Role>(entity =>
-            {
-                entity.HasKey(e => e.ID); // Đặt ID làm khóa chính
-
-                entity.HasIndex(e => e.Name)
-                      .IsUnique(); // Đảm bảo tên Role là duy nhất
+                      .HasForeignKey<UserProfile>(e => e.UserID)
+                      .OnDelete(DeleteBehavior.Cascade); // Xóa User sẽ xóa luôn UserProfile
             });
 
             // Cấu hình cho thực thể UserProfile
             modelBuilder.Entity<UserProfile>(entity =>
             {
                 entity.ToTable("User_Profile");
-                entity.HasKey(e => e.ID); // Đặt ID làm khóa chính
+                entity.HasKey(e => e.ID);
+
+                entity.Property(e => e.UserID)
+                      .IsRequired();
 
                 entity.Property(e => e.FullName)
                       .IsRequired()
-                      .HasMaxLength(200); // Đặt điều kiện cho cột FullName
+                      .HasMaxLength(200);
 
                 entity.Property(e => e.Address)
-                      .HasMaxLength(300); // Đặt độ dài tối đa cho cột Address
+                      .HasMaxLength(300);
             });
 
             // Cấu hình cho thực thể Token
             modelBuilder.Entity<Token>(entity =>
             {
-                entity.HasKey(e => e.ID); // Đặt ID làm khóa chính
+                entity.HasKey(e => e.ID);
 
                 entity.Property(e => e.TokenValue)
                       .IsRequired()
-                      .HasMaxLength(500); // Đặt điều kiện cho cột TokenValue
+                      .HasMaxLength(500);
 
                 entity.Property(e => e.TokenType)
                       .IsRequired()
-                      .HasMaxLength(50); // Đặt điều kiện cho cột TokenType
+                      .HasMaxLength(50);
 
                 entity.Property(e => e.Expiration)
-                      .IsRequired(); // Đặt điều kiện cho cột Expiration
+                      .IsRequired();
 
                 entity.HasOne(e => e.User)
                       .WithMany(u => u.Tokens)
-                      .HasForeignKey(e => e.UserId); // Khóa ngoại liên kết với bảng User
+                      .HasForeignKey(e => e.UserID)
+                      .OnDelete(DeleteBehavior.Cascade); // Xóa User sẽ xóa luôn Tokens liên quan
             });
 
             // Cấu hình cho thực thể Permission
             modelBuilder.Entity<Permission>(entity =>
             {
-                entity.HasKey(e => e.ID); // Đặt ID làm khóa chính
+                entity.HasKey(e => e.ID);
 
                 entity.HasIndex(e => e.PermissionName)
-                      .IsUnique(); // Đảm bảo tên quyền hạn là duy nhất
+                      .IsUnique();
 
                 entity.Property(e => e.PermissionName)
                       .IsRequired()
-                      .HasMaxLength(100); // Đặt điều kiện cho cột PermissionName
+                      .HasMaxLength(100);
+            });
+
+            // Cấu hình cho thực thể Role
+            modelBuilder.Entity<Role>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+
+                entity.HasIndex(e => e.RoleName)
+                      .IsUnique();
             });
 
             // Cấu hình cho thực thể RolePermission
             modelBuilder.Entity<RolePermission>(entity =>
             {
                 entity.ToTable("Role_Permission");
-                entity.HasKey(rp => new { rp.RoleID, rp.PermissionID }); // Composite Key
+                entity.HasKey(rp => new { rp.RoleID, rp.PermissionID });
 
                 entity.HasOne(rp => rp.Role)
                       .WithMany(r => r.RolePermissions)
-                      .HasForeignKey(rp => rp.RoleID);
+                      .HasForeignKey(rp => rp.RoleID)
+                      .OnDelete(DeleteBehavior.Cascade); // Xóa Role sẽ xóa luôn RolePermissions liên quan
 
                 entity.HasOne(rp => rp.Permission)
                       .WithMany(p => p.RolePermissions)
-                      .HasForeignKey(rp => rp.PermissionID);
+                      .HasForeignKey(rp => rp.PermissionID)
+                      .OnDelete(DeleteBehavior.Cascade); // Xóa Permission sẽ xóa luôn RolePermissions liên quan
             });
 
             // Cấu hình cho thực thể UserRole
             modelBuilder.Entity<UserRole>(entity =>
             {
                 entity.ToTable("Role_User");
-                entity.HasKey(ur => new { ur.UserID, ur.RoleID }); // Composite Key
+                entity.HasKey(ur => new { ur.UserID, ur.RoleID });
 
                 entity.HasOne(ur => ur.User)
                       .WithMany(u => u.UserRoles)
-                      .HasForeignKey(ur => ur.UserID);
+                      .HasForeignKey(ur => ur.UserID)
+                      .OnDelete(DeleteBehavior.Cascade); // Xóa User sẽ xóa luôn UserRoles liên quan
 
                 entity.HasOne(ur => ur.Role)
                       .WithMany(r => r.UserRoles)
-                      .HasForeignKey(ur => ur.RoleID);
+                      .HasForeignKey(ur => ur.RoleID)
+                      .OnDelete(DeleteBehavior.Cascade); // Xóa Role sẽ xóa luôn UserRoles liên quan
             });
+
+
+            // Tạo mật khẩu băm
+            string hashedPassword = HashPassword("Admin123");
+
+            // Tạo role mặc định
+            var adminRole = new Role
+            {
+                ID = 1, // Đặt ID cố định
+                RoleName = "Administrator"
+            };
+
+            // Tạo user mặc định
+            var adminUser = new User
+            {
+                ID = 1, // Đặt ID cố định
+                Username = "admin",
+                EmployeeId = "ADMIN001",
+                Email = "admin@example.com",
+                PasswordHash = hashedPassword,
+                Status = UserStatus.Active
+            };
+
+            // Tạo quan hệ user-role mặc định
+            var userRole = new UserRole
+            {
+                UserID = adminUser.ID,
+                RoleID = adminRole.ID
+            };
+
+            // Seed data vào cơ sở dữ liệu
+            modelBuilder.Entity<Role>().HasData(adminRole);
+            modelBuilder.Entity<User>().HasData(adminUser);
+            modelBuilder.Entity<UserRole>().HasData(userRole);
+        }
+
+        // Hàm băm mật khẩu (có thể dùng các thuật toán băm như SHA-256)
+        private static string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
         }
 
         // Override phương thức SaveChangesAsync để tự động cập nhật UpdatedAt
