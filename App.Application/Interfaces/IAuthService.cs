@@ -24,5 +24,7 @@ namespace App.Application.Interfaces
 
         // Đặt lại mật khẩu
         Task ResetPassword(string resetToken, string newPassword);
+
+        Task<AuthTokenDto> RefreshAccessTokenAsync(string refreshToken);
     }
 }

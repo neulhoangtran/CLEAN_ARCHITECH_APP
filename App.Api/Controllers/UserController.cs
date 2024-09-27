@@ -12,11 +12,13 @@ namespace App.Api.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
+        private readonly IAuthService _authService;
 
         // Inject UserService vào Controller
-        public UserController(IUserService userService)
+        public UserController(IUserService userService, IAuthService authService)
         {
             _userService = userService;
+            _authService = authService;
         }
 
         // Đăng ký người dùng mới
@@ -125,6 +127,19 @@ namespace App.Api.Controllers
             {
                 return BadRequest(new { Error = ex.Message });
             }
+        }
+
+        // API để làm mới Access Token
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
+        {
+            var newTokens = await _authService.RefreshAccessTokenAsync(request.RefreshToken);
+            if (newTokens == null)
+            {
+                return Unauthorized(new { Message = "Invalid or expired refresh token" });
+            }
+
+            return Ok(newTokens);
         }
     }
 }

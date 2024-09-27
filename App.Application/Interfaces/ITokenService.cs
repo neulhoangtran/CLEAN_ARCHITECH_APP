@@ -10,5 +10,8 @@ namespace App.Application.Interfaces
         Task RevokeToken(string token);
         string GeneratePasswordResetToken(User user);
         int ValidatePasswordResetToken(string resetToken);
+
+        string GenerateAccessToken(User user); // Phương thức tạo Access Token
+        string GenerateRefreshToken(); // Phương thức tạo Refresh Token
     }
 }

@@ -3,7 +3,8 @@
     public class AuthTokenDto
     {
         // Token xác thực
-        public string Token { get; set; }
+        public string AccessToken { get; set; }
+        public string RefreshToken { get; set; }
 
         // Thời gian hết hạn của token
         public DateTime Expiration { get; set; }

@@ -13,6 +13,10 @@ namespace App.Infrastructure.Persistence
             _context = context;
         }
 
+        public IEnumerable<Role> GetAll() {
+            return _context.Roles;
+        }
+
         public Role GetById(int id)
         {
             return _context.Roles.Find(id);
@@ -36,9 +40,9 @@ namespace App.Infrastructure.Persistence
         }
 
         // Thực thi phương thức Delete theo interface
-        public void Delete(int id)
+        public void Delete(Role role)
         {
-            var role = _context.Roles.Find(id);
+            //var role = _context.Roles.Find(id);
             if (role != null)
             {
                 _context.Roles.Remove(role);

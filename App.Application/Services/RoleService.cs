@@ -49,7 +49,7 @@ namespace App.Application.Services
                 Name = roleName
             };
             _roleRepository.Add(role);
-            _roleRepository.SaveChanges();
+            //_roleRepository.SaveChanges();
         }
 
         public void UpdateRole(int roleId, string roleName)
@@ -60,7 +60,7 @@ namespace App.Application.Services
 
             role.Name = roleName;
             _roleRepository.Update(role);
-            _roleRepository.SaveChanges();
+            //_roleRepository.SaveChanges();
         }
 
         public void DeleteRole(int roleId)
@@ -70,7 +70,7 @@ namespace App.Application.Services
                 throw new Exception("Role not found");
 
             _roleRepository.Delete(role);
-            _roleRepository.SaveChanges();
+            //_roleRepository.SaveChanges();
         }
     }
 }
