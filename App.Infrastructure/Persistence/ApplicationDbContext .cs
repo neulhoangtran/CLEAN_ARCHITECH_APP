@@ -187,7 +187,7 @@ namespace App.Infrastructure.Persistence
             // Tạo user mặc định
             var adminUser = new User
             {
-                ID = 1, // Đặt ID cố định
+                ID = 1,
                 Username = "admin",
                 EmployeeId = "ADMIN001",
                 Email = "admin@example.com",
@@ -198,8 +198,8 @@ namespace App.Infrastructure.Persistence
             // Tạo quan hệ user-role mặc định
             var userRole = new UserRole
             {
-                UserID = adminUser.ID,
-                RoleID = adminRole.ID
+                UserID = 1,
+                RoleID = 1
             };
 
             // Seed data vào cơ sở dữ liệu
