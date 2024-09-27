@@ -1,5 +1,9 @@
 # CLEAN_ARCHITECH_APP
 
+dotnet ef migrations add InitialCreateDatabase -p App.Infrastructure/App.Infrastructure.csproj -s App.Api/App.Api.csproj
+
+dotnet ef database update -p App.Infrastructure/App.Infrastructure.csproj -s App.Api/App.Api.csproj
+
 <pre>
 /MySolution.sln                       // Solution chính chứa tất cả các project
 │
