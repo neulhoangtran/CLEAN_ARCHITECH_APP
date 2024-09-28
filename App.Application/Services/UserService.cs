@@ -22,18 +22,6 @@ namespace App.Application.Services
             _eventBus = eventBus;
         }
 
-        public void RegisterUser(UserDto userDto)
-        {
-            if (!_userDomainService.IsUsernameUnique(userDto.Username))
-                throw new Exception("Username already exists");
-
-            var user = new User(userDto.Username, userDto.EmployeeId, userDto.Email, userDto.PasswordHash, userDto.Status);
-            _userRepository.Add(user);
-
-            var userRegisteredEvent = new UserRegisteredEvent(user.ID, user.Username, user.Email);
-            _eventBus.Publish(userRegisteredEvent);
-        }
-
         // Thêm phương thức GetUserById
         public async Task<UserDto> GetUserById(int userId)
         {
@@ -65,23 +53,6 @@ namespace App.Application.Services
 
             var userUpdatedEvent = new UserUpdatedEvent(user.ID, user.Email);
             _eventBus.Publish(userUpdatedEvent);
-        }
-
-        // Thêm phương thức Login
-        public async Task<UserDto> Login(string username, string password)
-        {
-            var user = _userRepository.GetByUsername(username);
-            if (user == null || user.PasswordHash != password) // Giả sử so sánh trực tiếp, nên hash mật khẩu trước
-            {
-                return null;
-            }
-
-            return new UserDto
-            {
-                ID = user.ID,
-                Username = user.Username,
-                Email = user.Email,
-            };
         }
 
         public async Task DeleteUser(int userId)

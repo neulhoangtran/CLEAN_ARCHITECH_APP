@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using System.Threading.Tasks;
 using App.Application.Interfaces;
 using App.Domain.Entities;
 using Microsoft.Extensions.Configuration;
@@ -13,24 +14,19 @@ namespace App.Application.Services
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
+
         public TokenService(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        public string GenerateToken(User user)
+        // Tạo Access Token cho người dùng
+        public string GenerateAccessToken(User user)
         {
-            // Tạo token logic
-            // Kiểm tra nếu UserProfile null thì có thể xử lý thêm ở đây
-            var userProfile = user.UserProfile;
-
-            // Tạo các claims (yêu cầu) chứa thông tin người dùng
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-                new Claim("EmployeeId", user.EmployeeId), // Thêm EmployeeId
-                //new Claim(ClaimTypes.Role, user.Role),    // Thêm Role
-                //new Claim("IpAddress", userProfile?.IPAddress ?? "N/A"), // Thêm IpAddress, kiểm tra null
+                new Claim("EmployeeId", user.EmployeeId), // Thêm thông tin EmployeeId vào claims
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
@@ -43,39 +39,13 @@ namespace App.Application.Services
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
-                signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token); 
-        }
-
-        // Triển khai phương thức tạo Access Token
-        public string GenerateAccessToken(User user)
-        {
-            var userProfile = user.UserProfile;
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-                new Claim("EmployeeId", user.EmployeeId),
-                //new Claim("IpAddress", userProfile?.IPAddress ?? "N/A"), // Thêm IpAddress, kiểm tra null
-                //new Claim(ClaimTypes.Role, user.Role),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
-            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["Jwt:Issuer"],
-                audience: _configuration["Jwt:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddMinutes(30), // Thời gian sống của Access Token là 30 phút
                 signingCredentials: credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        // Triển khai phương thức tạo Refresh Token
+        // Tạo Refresh Token ngẫu nhiên
         public string GenerateRefreshToken()
         {
             var randomNumber = new byte[32];
@@ -86,13 +56,33 @@ namespace App.Application.Services
             }
         }
 
+        // Kiểm tra tính hợp lệ của Access Token
         public async Task<bool> IsTokenValid(string token)
         {
-            // Kiểm tra token có hợp lệ không
-            return await Task.FromResult(true);
+            var tokenHandler = new JwtSecurityTokenHandler();
+            try
+            {
+                var validationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidIssuer = _configuration["Jwt:Issuer"],
+                    ValidAudience = _configuration["Jwt:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]))
+                };
+
+                var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
+                return await Task.FromResult(principal != null);
+            }
+            catch
+            {
+                return await Task.FromResult(false);
+            }
         }
 
-        // Phương thức lấy UserId từ token, ví dụ cho thấy sử dụng phương thức khác.
+        // Lấy thông tin UserId từ Access Token
         public int GetUserIdFromToken(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -102,22 +92,29 @@ namespace App.Application.Services
             return userIdClaim != null ? int.Parse(userIdClaim.Value) : 0;
         }
 
+        // Thu hồi (revoke) token
         public async Task RevokeToken(string token)
         {
-            // Logic thu hồi token
+            // Logic thu hồi token có thể là lưu vào danh sách bị thu hồi trong DB
             await Task.CompletedTask;
         }
 
+        // Tạo token đặt lại mật khẩu
         public string GeneratePasswordResetToken(User user)
         {
-            // Tạo token đặt lại mật khẩu
-            return "reset_token";
+            // Tạo một token đặt lại mật khẩu, ví dụ sử dụng một hash hoặc mã hóa thông tin người dùng
+            using (var sha256 = SHA256.Create())
+            {
+                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes($"{user.Username}{DateTime.UtcNow}"));
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
         }
 
+        // Xác thực token đặt lại mật khẩu
         public int ValidatePasswordResetToken(string resetToken)
         {
-            // Xác thực token đặt lại mật khẩu
-            // Giả lập chuyển đổi chuỗi token thành số nguyên
+            // Ở đây bạn có thể so sánh với token đã lưu trong cơ sở dữ liệu
+            // Ví dụ: Trích xuất UserId từ token đã lưu trong DB nếu token hợp lệ
             if (int.TryParse(resetToken, out int userId))
             {
                 return userId;

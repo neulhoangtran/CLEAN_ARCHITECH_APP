@@ -4,6 +4,14 @@ using App.Application.Interfaces;
 using App.Application.DTOs;
 using App.Domain.Repositories;
 using App.Domain.Entities;
+using App.Domain.Services;
+using App.Domain.Events;
+using App.Domain.Events.User;
+using App.Domain.Services;
+using System.Threading.Tasks;
+using System.Text;
+using System.Security.Cryptography;
+
 
 namespace App.Application.Services
 {
@@ -13,31 +21,41 @@ namespace App.Application.Services
         private readonly ITokenService _tokenService;      // Service để tạo và xác thực token
         private readonly IEmailService _emailService;      // Service để gửi email
         private readonly ITokenRepository _tokenRepository;
+        private readonly UserDomainService _userDomainService;
+        private readonly IEventBus _eventBus;
 
-        public AuthService(IUserRepository userRepository, ITokenService tokenService, IEmailService emailService, ITokenRepository tokenRepository)
+        public AuthService(IUserRepository userRepository, ITokenService tokenService, IEmailService emailService, ITokenRepository tokenRepository, UserDomainService userDomainService, IEventBus eventBus)
         {
             _userRepository = userRepository;
             _tokenService = tokenService;
             _emailService = emailService;
             _tokenRepository = tokenRepository;
+            _userDomainService = userDomainService;
+            _eventBus = eventBus;
         }
 
-        public async Task<AuthTokenDto> Login(string username, string password)
+        public void RegisterUser(UserDto userDto)
         {
-            var user = await _userRepository.GetByUsernameAsync(username);
-            if (user == null || !VerifyPassword(password, user.PasswordHash))
-            {
-                throw new UnauthorizedAccessException("Invalid credentials");
-            }
+            if (!_userDomainService.IsUsernameUnique(userDto.Username))
+                throw new Exception("Username already exists");
 
-            var token = _tokenService.GenerateToken(user);
-            return new AuthTokenDto { AccessToken = token, Expiration = DateTime.UtcNow.AddHours(1) };
+            var user = new User(userDto.Username, userDto.EmployeeId, userDto.Email, userDto.PasswordHash, userDto.Status);
+            _userRepository.Add(user);
+
+            var userRegisteredEvent = new UserRegisteredEvent(user.ID, user.Username, user.Email);
+            _eventBus.Publish(userRegisteredEvent);
         }
 
         // Đăng nhập người dùng
         public async Task<AuthTokenDto> LoginAsync(string username, string password)
         {
             var user = await _userRepository.GetByUsernameAsync(username);
+
+            // Kiểm tra nếu không phải là user
+            if (user is not User)
+               return null;
+
+            // Kiểm tra nếu tồn tại user nhưng sai password
             if (user == null || !VerifyPassword(password, user.PasswordHash))
                 return null;
 
@@ -123,14 +141,20 @@ namespace App.Application.Services
         // Các hàm phụ trợ để xác thực và hash mật khẩu
         private bool VerifyPassword(string password, string passwordHash)
         {
-            // So sánh mật khẩu với hash (giả lập)
-            return password == passwordHash;
+            // Hash lại mật khẩu nhập vào để so sánh với mật khẩu hash đã lưu
+            var hashedPassword = HashPassword(password);
+
+            // So sánh mật khẩu đã mã hóa với mật khẩu đã mã hóa lưu trữ
+            return hashedPassword == passwordHash;
         }
 
-        private string HashPassword(string password)
+        private static string HashPassword(string password)
         {
-            // Hàm hash mật khẩu (giả lập)
-            return password;
+            using (var sha256 = SHA256.Create())
+            {
+                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
         }
 
         public async Task<AuthTokenDto> RefreshAccessTokenAsync(string refreshToken)

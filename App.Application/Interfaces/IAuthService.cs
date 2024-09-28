@@ -5,7 +5,9 @@ namespace App.Application.Interfaces
     public interface IAuthService
     {
         // Đăng nhập người dùng
-        Task<AuthTokenDto> Login(string username, string password);
+        Task<AuthTokenDto> LoginAsync(string username, string password);
+
+        void RegisterUser(UserDto userDto);
 
         // Đăng xuất người dùng
         Task Logout(string token);
