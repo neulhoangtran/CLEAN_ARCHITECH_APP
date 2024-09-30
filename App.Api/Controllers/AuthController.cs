@@ -3,11 +3,12 @@ using App.Application.Interfaces;   // Sử dụng các interface từ Applicati
 using App.Application.DTOs;        // Sử dụng các Data Transfer Object từ Application layer
 using ApiLoginRequest = App.Api.Models.LoginRequest; // Alias cho LoginRequest từ App.Api.Models
 using App.Api.Models; // Alias cho LoginRequest từ App.Api.Models
-using Microsoft.AspNetCore.Identity.Data; // Đảm bảo không dùng tên LoginRequest từ Microsoft.AspNetCore.Identity.Data
+using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Authorization; // Đảm bảo không dùng tên LoginRequest từ Microsoft.AspNetCore.Identity.Data
 
 namespace App.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -22,8 +23,9 @@ namespace App.Api.Controllers
         }
 
         // Đăng ký người dùng mới
+        [Authorize]
         [HttpPost("register")]
-        public IActionResult RegisterUser([FromBody] RegisterUserRequest request)
+        public async Task<IActionResult> RegisterUser([FromBody] RegisterUserRequest request)
         {
             try
             {
@@ -32,15 +34,19 @@ namespace App.Api.Controllers
 
                     Username = request.Username,
                     Email = request.Email,
+                    EmployeeId = request.EmployeeId,
                     PasswordHash = request.Password, // Giả sử password đã được hash trong service
-                    //Role = request.Role,
+                    PhoneNumber = request.PhoneNumber, // Giá trị có thể null
+                    FullName = request.FullName, // Giá trị có thể null
+                    Address = request.Address, // Giá trị có thể null
+                    Role = request.Role ?? 2
                     //PhoneNumber = request.PhoneNumber,
                     //FullName = request.FullName,
                     //Address = request.Address
 
                 };
 
-                _authService.RegisterUser(userDto);
+                await _authService.RegisterUserAsync(userDto);
                 return Ok(new { Message = "User registered successfully" });
             }
             catch (Exception ex)
@@ -71,20 +77,6 @@ namespace App.Api.Controllers
             {
                 return BadRequest(new { Error = ex.Message });
             }
-        }
-
-        
-        // API để làm mới Access Token
-        [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest request)
-        {
-            var newTokens = await _authService.RefreshAccessTokenAsync(request.RefreshToken);
-            if (newTokens == null)
-            {
-                return Unauthorized(new { Message = "Invalid or expired refresh token" });
-            }
-
-            return Ok(newTokens);
         }
     }
 }

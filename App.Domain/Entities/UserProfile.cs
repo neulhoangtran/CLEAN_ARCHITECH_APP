@@ -11,6 +11,7 @@
         // Navigation property - Liên kết 1-1 với User
         public User User { get; set; }
 
+        public UserProfile() { }
         public UserProfile(string fullName, string address, string phoneNumber)
         {
             FullName = fullName;

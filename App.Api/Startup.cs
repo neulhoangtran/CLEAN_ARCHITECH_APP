@@ -35,6 +35,10 @@ namespace App.Api
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
+            services.AddScoped(typeof(IPaginateService<>), typeof(PaginateService<>));
+            services.AddScoped(typeof(IPaginateRepository<>), typeof(PaginateRepository<>));
+
+
             // Đăng ký các dịch vụ của Domain Layer
             services.AddScoped<IUserRepository, UserRepository>();  // Đăng ký UserRepository
             services.AddScoped<IRoleRepository, RoleRepository>();  // Đăng ký RoleRepository
@@ -100,6 +104,7 @@ namespace App.Api
                     new string[] {}
                 }
             });
+            //services.AddAuthorization();
             });
         }
 
@@ -120,6 +125,8 @@ namespace App.Api
             app.UseHttpsRedirection();
             app.UseRouting();
 
+            // Bật xác thực JWT
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

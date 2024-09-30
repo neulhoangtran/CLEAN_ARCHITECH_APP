@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace App.Api.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/user")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -20,6 +20,38 @@ namespace App.Api.Controllers
         {
             _userService = userService;
             _authService = authService;
+        }
+
+        // API lấy tất cả người dùng
+        [HttpGet("list")]
+        public async Task<IActionResult> GetAllUsers(int pageIndex = 1, int pageSize = 10)
+        {
+            try
+            {
+                // Lấy danh sách phân trang từ service
+                var paginatedUsers = await _userService.GetPaginatedUsersAsync(pageIndex, pageSize);
+
+                if (paginatedUsers == null || paginatedUsers.Items.Count == 0)
+                {
+                    return NotFound(new { Message = "No users found" });
+                }
+
+                return Ok(new
+                {
+                    Data = paginatedUsers.Items,
+                    Pagination = new
+                    {
+                        PageIndex = paginatedUsers.PageIndex,
+                        TotalPages = paginatedUsers.TotalPages,
+                        HasPreviousPage = paginatedUsers.HasPreviousPage,
+                        HasNextPage = paginatedUsers.HasNextPage
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
         }
 
 

@@ -1,4 +1,6 @@
-﻿namespace App.Domain.Entities
+﻿using System.Net;
+
+namespace App.Domain.Entities
 {
     public class User: BaseEntity
     {
@@ -15,14 +17,22 @@
 
         // Constructor cho đăng ký người dùng mới
         public User() { }
-        public User(string username,string EmployeeId, string email, string passwordHash, UserStatus status)
+        public User(string username,string employeeId, string email, string passwordHash, UserStatus status, string FullName, string Address, string PhoneNumber, int Role)
         {
             //UserId = Guid.NewGuid();
             Username = username;
-            EmployeeId = EmployeeId;
+            EmployeeId = employeeId;
             PasswordHash = passwordHash;
             Email = email;
             Status = UserStatus.Active;
+
+            // Khởi tạo UserProfile với các thông tin từ fullName, address, và phoneNumber
+            UserProfile = new UserProfile
+            {
+                FullName = FullName,
+                Address = Address,
+                PhoneNumber = PhoneNumber
+            };
         }
 
         // Phương thức cập nhật thông tin người dùng

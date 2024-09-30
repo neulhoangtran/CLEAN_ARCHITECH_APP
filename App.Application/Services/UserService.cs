@@ -68,5 +68,24 @@ namespace App.Application.Services
             var userDeletedEvent = new UserDeletedEvent(user.ID);
             _eventBus.Publish(userDeletedEvent);
         }
+
+        public async Task<PaginatedList<UserDto>> GetPaginatedUsersAsync(int pageIndex, int pageSize)
+        {
+            // Lấy danh sách người dùng từ repository và chuyển đổi sang UserDto
+            var users = await _userRepository.GetAllUsersAsync(); // Giả sử phương thức này trả về IQueryable<User>
+            var paginatedUsers = await PaginatedList<UserDto>.CreateAsync(
+                users.Select(u => new UserDto
+                {
+                    ID = u.ID,
+                    Username = u.Username,
+                    Email = u.Email,
+                    PhoneNumber = u.UserProfile?.PhoneNumber,
+                    FullName = u.UserProfile?.FullName,
+                    Address = u.UserProfile?.Address
+                }),
+                pageIndex, pageSize);
+
+            return paginatedUsers;
+        }
     }
 }

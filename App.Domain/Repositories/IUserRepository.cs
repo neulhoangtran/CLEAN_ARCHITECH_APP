@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using App.Domain.Entities;
-
 namespace App.Domain.Repositories
 {
     public interface IUserRepository
@@ -11,6 +10,7 @@ namespace App.Domain.Repositories
         Task<User> GetByEmailAsync(string email);
         void Add(User user);
         void Update(User user);
-        Task SaveChangesAsync(); 
+        Task SaveChangesAsync();
+        IEnumerable<User> GetAll();
     }
 }

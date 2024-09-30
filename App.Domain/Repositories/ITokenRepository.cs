@@ -5,9 +5,13 @@ namespace App.Domain.Repositories
 {
     public interface ITokenRepository
     {
-        Task AddAsync(Token token); // Thêm token vào cơ sở dữ liệu
-        Task<Token> GetByTokenAsync(string token); // Lấy token theo giá trị token
-        void Update(Token token); // Cập nhật token
-        Task SaveChangesAsync(); // Lưu các thay đổi vào cơ sở dữ liệu
+        Task<Token> GetByTokenAsync(string token);
+        Task<List<Token>> GetTokensByUserIdAsync(int userId);
+        void RemoveRange(IEnumerable<Token> tokens);
+        Task AddTokenAsync(Token token);
+        Task RemoveTokenAsync(Token token);
+        Task<int> GetUserTokenCountAsync(int userId);
+        void Update(Token token);
+        Task SaveChangesAsync();
     }
 }

@@ -31,7 +31,7 @@ namespace App.Infrastructure.Persistence
 
         public void Add(User user)
         {
-            _context.Users.Add(user);
+            _context.Users.Add(user);  // Không cần await ở đây
         }
 
         public void Update(User user)
@@ -46,6 +46,10 @@ namespace App.Infrastructure.Persistence
         public User GetByUsername(string username)
         {
             return _context.Users.FirstOrDefault(u => u.Username == username);
+        }
+        public IEnumerable<User> GetAll()
+        {
+            return _context.Users.Include(u => u.UserProfile).ToList();
         }
     }
 }

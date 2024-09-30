@@ -8,16 +8,21 @@ using App.Domain.Entities;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
+using App.Domain.Repositories;
+using App.Application.DTOs;
 
 namespace App.Application.Services
 {
     public class TokenService : ITokenService
     {
         private readonly IConfiguration _configuration;
-
-        public TokenService(IConfiguration configuration)
+        private readonly ITokenRepository _tokenRepository;
+        private readonly IUserRepository _userRepository;  // Repository để tương tác với dữ liệu người dùng
+        public TokenService(IConfiguration configuration, ITokenRepository tokenRepository, IUserRepository userRepository)
         {
             _configuration = configuration;
+            _tokenRepository = tokenRepository;
+            _userRepository = userRepository;
         }
 
         // Tạo Access Token cho người dùng
@@ -95,8 +100,11 @@ namespace App.Application.Services
         // Thu hồi (revoke) token
         public async Task RevokeToken(string token)
         {
-            // Logic thu hồi token có thể là lưu vào danh sách bị thu hồi trong DB
-            await Task.CompletedTask;
+            var tokenEntity = await _tokenRepository.GetByTokenAsync(token);
+            if (tokenEntity != null)
+            {
+                await _tokenRepository.RemoveTokenAsync(tokenEntity);
+            }
         }
 
         // Tạo token đặt lại mật khẩu
@@ -122,6 +130,65 @@ namespace App.Application.Services
 
             // Nếu không trích xuất được userId, có thể ném ra ngoại lệ hoặc xử lý phù hợp
             throw new ArgumentException("Invalid reset token");
+        }
+        public async Task<int> GetUserTokenCountAsync(int userId)
+        {
+            return await _tokenRepository.GetUserTokenCountAsync(userId);
+        }
+
+        public async Task<UserDto> GetUserFromToken(string token)
+        {
+            var userId = GetUserIdFromToken(token);
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            return new UserDto
+            {
+                ID = user.ID,
+                Username = user.Username,
+                Email = user.Email,
+            };
+        }
+
+        public async Task<AuthTokenDto> RefreshAccessTokenAsync(string refreshToken)
+        {
+            // Kiểm tra refresh token trong cơ sở dữ liệu
+            var storedToken = await _tokenRepository.GetByTokenAsync(refreshToken);
+            if (storedToken == null || storedToken.Expiration < DateTime.UtcNow)
+            {
+                return null; // Token không hợp lệ hoặc đã hết hạn
+            }
+
+            // Lấy thông tin người dùng
+            var user = await _userRepository.GetByIdAsync(storedToken.UserID);
+            if (user == null)
+            {
+                return null; // Người dùng không tồn tại
+            }
+
+            // Xóa các token cũ nếu vượt quá 3 token
+            var userTokens = await _tokenRepository.GetTokensByUserIdAsync(user.ID);
+            if (userTokens.Count >= 3)
+            {
+                var tokensToRemove = userTokens.OrderBy(t => t.Expiration).Take(userTokens.Count - 2).ToList();
+                _tokenRepository.RemoveRange(tokensToRemove);
+            }
+
+            // Tạo mới Access Token
+            var accessToken = GenerateAccessToken(user);
+            var newRefreshToken = GenerateRefreshToken();
+
+            // Cập nhật refresh token mới vào cơ sở dữ liệu
+            storedToken.TokenValue = newRefreshToken;
+            storedToken.Expiration = DateTime.UtcNow.AddDays(2);
+
+            _tokenRepository.Update(storedToken);
+            await _tokenRepository.SaveChangesAsync();
+
+            return new AuthTokenDto
+            {
+                AccessToken = accessToken,
+                RefreshToken = newRefreshToken
+            };
         }
     }
 }

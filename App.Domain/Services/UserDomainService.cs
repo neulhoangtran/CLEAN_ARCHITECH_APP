@@ -14,9 +14,9 @@ namespace App.Domain.Services
         }
 
         // Kiểm tra tính duy nhất của Username
-        public bool IsUsernameUnique(string username)
+        public async Task<bool> IsUsernameUnique(string username)
         {
-            return _userRepository.GetByUsername(username) == null;
+            return await _userRepository.GetByUsernameAsync(username) == null;
         }
 
         // Kiểm tra sự tồn tại của Role

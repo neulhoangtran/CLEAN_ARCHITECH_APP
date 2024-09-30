@@ -184,6 +184,13 @@ namespace App.Infrastructure.Persistence
                 RoleName = "Administrator"
             };
 
+            // Tạo role mặc định
+            var employeeRole = new Role
+            {
+                ID = 2, // Đặt ID cố định
+                RoleName = "Employee"
+            };
+
             // Tạo user mặc định
             var adminUser = new User
             {
@@ -204,6 +211,7 @@ namespace App.Infrastructure.Persistence
 
             // Seed data vào cơ sở dữ liệu
             modelBuilder.Entity<Role>().HasData(adminRole);
+            modelBuilder.Entity<Role>().HasData(employeeRole);
             modelBuilder.Entity<User>().HasData(adminUser);
             modelBuilder.Entity<UserRole>().HasData(userRole);
         }
