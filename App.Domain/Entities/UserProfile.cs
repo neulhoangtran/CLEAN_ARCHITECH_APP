@@ -12,20 +12,22 @@
         public User User { get; set; }
 
         public UserProfile() { }
-        public UserProfile(string fullName, string address, string phoneNumber)
+        public UserProfile(int UserId, string fullName, string address, string phoneNumber, DateTime dateOfBirth)
         {
+            UserID = UserId;
             FullName = fullName;
             Address = address;
             PhoneNumber = phoneNumber;
+            DateOfBirth = dateOfBirth;
         }
 
-        // Phương thức cập nhật thông tin cá nhân
-        public void UpdateProfile(string fullName, string address, string phoneNumber, DateTime DateOfBirth)
-        {
-            FullName = fullName;
-            Address = address;
-            PhoneNumber = phoneNumber;
-            DateOfBirth = DateOfBirth;
-        }
+        //// Phương thức cập nhật thông tin cá nhân
+        //public void UpdateProfile(string fullName, string address, string phoneNumber, DateTime DateOfBirth)
+        //{
+        //    FullName = fullName;
+        //    Address = address;
+        //    PhoneNumber = phoneNumber;
+        //    DateOfBirth = DateOfBirth;
+        //}
     }
 }

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using App.Application.Interfaces;
 using App.Api.Models.Role;
+using Microsoft.AspNetCore.Authorization;
 
-[Route("api/[controller]")]
+[Authorize]
+[Route("api/role")]
 [ApiController]
 public class RoleController : ControllerBase
 {
@@ -13,31 +15,31 @@ public class RoleController : ControllerBase
         _roleService = roleService;
     }
 
-    [HttpGet]
-    public IActionResult GetAllRoles()
+    [HttpGet("list")]
+    public async Task<IActionResult> GetAllRoles()
     {
         var roles = _roleService.GetAllRoles();
         return Ok(roles);
     }
 
-    [HttpPost]
-    public IActionResult CreateRole([FromBody] CreateRoleRequest request)
+    [HttpPost("create")]
+    public async Task<IActionResult> CreateRole([FromBody] CreateRoleRequest request)
     {
-        _roleService.CreateRole(request.Name);
+        await _roleService.CreateRoleAsync(request.Name);
         return Ok(new { Message = "Role created successfully" });
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateRole(int id, [FromBody] UpdateRoleRequest request)
+    public async Task<IActionResult> UpdateRole(int id, [FromBody] UpdateRoleRequest request)
     {
-        _roleService.UpdateRole(id, request.Name);
+        await _roleService.UpdateRoleAsync(id, request.Name);
         return Ok(new { Message = "Role updated successfully" });
     }
 
     [HttpDelete("{id}")]
-    public IActionResult DeleteRole(int id)
+    public async Task<IActionResult> DeleteRole(int id)
     {
-        _roleService.DeleteRole(id);
+        await _roleService.DeleteRoleAsync(id);
         return Ok(new { Message = "Role deleted successfully" });
     }
 }

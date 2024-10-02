@@ -24,7 +24,7 @@ namespace App.Api.Controllers
 
         // API lấy tất cả người dùng
         [HttpGet("list")]
-        public async Task<IActionResult> GetAllUsers(int pageIndex = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAllUsers(int pageIndex = 1, int pageSize = 20)
         {
             try
             {
@@ -57,17 +57,17 @@ namespace App.Api.Controllers
 
         // Lấy thông tin người dùng theo Id
         [HttpGet("{id}")]
-        public IActionResult GetUserById(int id)
+        public async Task<IActionResult> GetUserById(int id)
         {
             try
             {
-                var user = _userService.GetUserById(id);
+                var user = _userService.GetUserByIdAsync(id);
                 if (user == null)
                 {
                     return NotFound(new { Message = "User not found" });
                 }
 
-                return Ok(user);
+                return Ok(new {User = user });
             }
             catch (Exception ex)
             {
@@ -77,7 +77,7 @@ namespace App.Api.Controllers
 
         // Cập nhật thông tin người dùng
         [HttpPut("{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] UpdateUserRequest request)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserRequest request)
         {
             try
             {
@@ -87,9 +87,11 @@ namespace App.Api.Controllers
                     Address = request.Address,
                     PhoneNumber = request.PhoneNumber,
                     Email = request.Email,
+                    Username = request.Username,
+                    Role = request.Role.HasValue ? request.Role.Value : 0 // Sử dụng giá trị mặc định nếu Role là null
                 };
 
-                _userService.UpdateUser(id, userDto);
+                await _userService.UpdateUserAsync(id, userDto);
                 return Ok(new { Message = "User updated successfully" });
             }
             catch (Exception ex)
@@ -100,11 +102,11 @@ namespace App.Api.Controllers
 
         // Xóa người dùng theo Id
         [HttpDelete("{id}")]
-        public IActionResult DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
             try
             {
-                _userService.DeleteUser(id);
+                await _userService.DeleteUserAsync(id);
                 return Ok(new { Message = "User deleted successfully" });
             }
             catch (Exception ex)

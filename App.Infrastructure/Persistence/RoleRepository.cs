@@ -13,52 +13,42 @@ namespace App.Infrastructure.Persistence
             _context = context;
         }
 
-        public IEnumerable<Role> GetAll() {
+        public  IEnumerable<Role> GetAll() {
             return _context.Roles;
         }
 
-        public Role GetById(int id)
+        public async Task<Role> GetByIdAsync(int id)
         {
-            return _context.Roles.Find(id);
+            return await _context.Roles.FindAsync(id);
         }
 
-        public Role GetByName(string name)
+        public async Task<Role> GetByNameAsync(string name)
         {
-            return _context.Roles.FirstOrDefault(r => r.RoleName == name);
+            return await _context.Roles.FirstOrDefaultAsync(r => r.RoleName == name);
         }
 
         public void Add(Role role)
         {
             _context.Roles.Add(role);
-            _context.SaveChanges();
         }
 
         public void Update(Role role)
         {
             _context.Roles.Update(role);
-            _context.SaveChanges();
         }
 
         // Thực thi phương thức Delete theo interface
         public void Delete(Role role)
         {
-            //var role = _context.Roles.Find(id);
             if (role != null)
             {
                 _context.Roles.Remove(role);
-                _context.SaveChanges();
             }
         }
 
-        // Thêm phương thức Delete với tham số string theo interface
-        public void Delete(string roleName)
+        public async Task SaveChangesAsync()
         {
-            var role = _context.Roles.FirstOrDefault(r => r.RoleName == roleName);
-            if (role != null)
-            {
-                _context.Roles.Remove(role);
-                _context.SaveChanges();
-            }
+            await _context.SaveChangesAsync();
         }
     }
 }

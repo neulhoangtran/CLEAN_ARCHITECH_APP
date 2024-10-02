@@ -18,7 +18,7 @@ namespace App.Application.Handlers
         public async Task Handle(UserDeletedEvent @event)
         {
             // Logic xử lý khi người dùng bị xóa
-            await _userService.DeleteUser(@event.Id); // Gọi phương thức DeleteUser một cách bất đồng bộ
+            await _userService.DeleteUserAsync(@event.Id); // Gọi phương thức DeleteUser một cách bất đồng bộ
         }
     }
 }

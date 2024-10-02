@@ -27,9 +27,9 @@ namespace App.Application.Services
             }).ToList();
         }
 
-        public RoleDto GetRoleById(int roleId)
+        public async Task<RoleDto> GetRoleById(int roleId)
         {
-            var role = _roleRepository.GetById(roleId);
+            var role = await _roleRepository.GetByIdAsync(roleId);
             if (role == null) return null;
 
             return new RoleDto
@@ -39,9 +39,9 @@ namespace App.Application.Services
             };
         }
 
-        public void CreateRole(string roleName)
+        public async Task CreateRoleAsync(string roleName)
         {
-            if (_roleRepository.GetByName(roleName) != null)
+            if (await _roleRepository.GetByNameAsync(roleName) != null)
                 throw new Exception("Role already exists");
 
             var role = new Role
@@ -49,28 +49,28 @@ namespace App.Application.Services
                 RoleName = roleName
             };
             _roleRepository.Add(role);
-            //_roleRepository.SaveChanges();
+            await _roleRepository.SaveChangesAsync();
         }
 
-        public void UpdateRole(int roleId, string roleName)
+        public async Task UpdateRoleAsync(int roleId, string roleName)
         {
-            var role = _roleRepository.GetById(roleId);
+            var role = await _roleRepository.GetByIdAsync(roleId);
             if (role == null)
                 throw new Exception("Role not found");
 
             role.RoleName = roleName;
             _roleRepository.Update(role);
-            //_roleRepository.SaveChanges();
+            await _roleRepository.SaveChangesAsync(); 
         }
 
-        public void DeleteRole(int roleId)
+        public async Task DeleteRoleAsync(int roleId)
         {
-            var role = _roleRepository.GetById(roleId);
+            var role =  await _roleRepository.GetByIdAsync(roleId);
             if (role == null)
                 throw new Exception("Role not found");
 
-            _roleRepository.Delete(role);
-            //_roleRepository.SaveChanges();
+             _roleRepository.Delete(role);
+            await _roleRepository.SaveChangesAsync();
         }
     }
 }

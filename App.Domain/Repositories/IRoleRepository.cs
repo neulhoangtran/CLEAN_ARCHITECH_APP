@@ -9,10 +9,10 @@ namespace App.Domain.Repositories
         IEnumerable<Role> GetAll();
 
         // Lấy thông tin vai trò theo ID
-        Role GetById(int id);
+        Task<Role> GetByIdAsync(int id);
 
         // Lấy thông tin vai trò theo tên vai trò
-        Role GetByName(string roleName);
+        Task<Role> GetByNameAsync(string roleName);
 
         // Thêm mới một vai trò
         void Add(Role role);
@@ -24,6 +24,6 @@ namespace App.Domain.Repositories
         void Delete(Role role);
 
         // Lưu thay đổi vào cơ sở dữ liệu
-        //void SaveChanges();
+        Task SaveChangesAsync();
     }
 }

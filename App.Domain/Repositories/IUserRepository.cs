@@ -10,7 +10,9 @@ namespace App.Domain.Repositories
         Task<User> GetByEmailAsync(string email);
         void Add(User user);
         void Update(User user);
+        void Delete(User user);
         Task SaveChangesAsync();
         IEnumerable<User> GetAll();
+        Task<Paginate<User>> GetPaginatedUsersAsync(int pageIndex, int pageSize);
     }
 }

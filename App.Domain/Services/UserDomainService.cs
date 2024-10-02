@@ -20,9 +20,9 @@ namespace App.Domain.Services
         }
 
         // Kiểm tra sự tồn tại của Role
-        public bool RoleExists(string roleName)
+        public async Task<bool> RoleExists(string roleName)
         {
-            return _roleRepository.GetByName(roleName) != null;
+            return await _roleRepository.GetByNameAsync(roleName) != null;
         }
 
         // Thay đổi vai trò của người dùng
@@ -32,7 +32,9 @@ namespace App.Domain.Services
             if (user == null)
                 throw new Exception("User not found");
 
-            if (!RoleExists(newRole))
+            bool roleExist = await RoleExists(newRole);
+
+            if (!roleExist)
                 throw new Exception("Role not found");
 
             //user.Role = newRole;

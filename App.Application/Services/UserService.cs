@@ -1,11 +1,15 @@
 ﻿using App.Application.DTOs;
 using App.Application.Interfaces;
+using App.Domain;
 using App.Domain.Entities;
 using App.Domain.Events;
 using App.Domain.Events.User;
 using App.Domain.Repositories;
 using App.Domain.Services;
+using System.Text;
 using System.Threading.Tasks;
+using System.Security.Cryptography;
+
 
 namespace App.Application.Services
 {
@@ -23,7 +27,7 @@ namespace App.Application.Services
         }
 
         // Thêm phương thức GetUserById
-        public async Task<UserDto> GetUserById(int userId)
+        public async Task<UserDto> GetUserByIdAsync(int userId)
         {
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null) return null;
@@ -34,58 +38,103 @@ namespace App.Application.Services
                 Username = user.Username,
                 EmployeeId = user.EmployeeId,
                 Email = user.Email,
-                Status = user.Status
+                Status = user.Status,
+                FullName = user.UserProfile?.FullName,
+                Address = user.UserProfile?.Address,
+                PhoneNumber = user.UserProfile?.PhoneNumber
             };
         }
 
         // Thêm phương thức UpdateUser
-        public async Task UpdateUser(int userId, UserDto userDto)
+        public async Task UpdateUserAsync(int userId, UserDto userDto)
         {
+            // Lấy thông tin người dùng từ repository
             var user = await _userRepository.GetByIdAsync(userId);
             if (user == null)
                 throw new Exception("User not found");
 
-            user.UpdateUserProfile(new UserProfile(userDto.FullName, userDto.Address, userDto.PhoneNumber));
-            user.Email = userDto.Email;
-
-            _userRepository.Update(user);
-            await _userRepository.SaveChangesAsync();
-
-            var userUpdatedEvent = new UserUpdatedEvent(user.ID, user.Email);
-            _eventBus.Publish(userUpdatedEvent);
-        }
-
-        public async Task DeleteUser(int userId)
-        {
-            var user = await _userRepository.GetByIdAsync(userId);
-            if (user == null)
-                throw new Exception("User not found");
-
-            user.Deactivate();
-            _userRepository.Update(user);
-            await _userRepository.SaveChangesAsync();
-
-            var userDeletedEvent = new UserDeletedEvent(user.ID);
-            _eventBus.Publish(userDeletedEvent);
-        }
-
-        public async Task<PaginatedList<UserDto>> GetPaginatedUsersAsync(int pageIndex, int pageSize)
-        {
-            // Lấy danh sách người dùng từ repository và chuyển đổi sang UserDto
-            var users = await _userRepository.GetAllUsersAsync(); // Giả sử phương thức này trả về IQueryable<User>
-            var paginatedUsers = await PaginatedList<UserDto>.CreateAsync(
-                users.Select(u => new UserDto
+            // Kiểm tra và xử lý UserProfile (Cập nhật hoặc thêm mới)
+            if (user.UserProfile != null)
+            {
+                // Nếu đã tồn tại UserProfile, chỉ cập nhật thông tin
+                user.UserProfile.FullName = userDto.FullName ?? user.UserProfile.FullName;
+                user.UserProfile.Address = userDto.Address ?? user.UserProfile.Address;
+                user.UserProfile.PhoneNumber = userDto.PhoneNumber ?? user.UserProfile.PhoneNumber;
+            }
+            else
+            {
+                // Nếu UserProfile chưa tồn tại, thêm mới
+                user.UserProfile = new UserProfile
                 {
-                    ID = u.ID,
-                    Username = u.Username,
-                    Email = u.Email,
-                    PhoneNumber = u.UserProfile?.PhoneNumber,
-                    FullName = u.UserProfile?.FullName,
-                    Address = u.UserProfile?.Address
-                }),
-                pageIndex, pageSize);
+                    UserID = userId, // Ràng buộc với user hiện tại
+                    FullName = userDto.FullName,
+                    Address = userDto.Address,
+                    PhoneNumber = userDto.PhoneNumber
+                };
+            }
 
-            return paginatedUsers;
+            // Cập nhật thông tin cơ bản của người dùng
+            user.Username = userDto.Username ?? user.Username;
+            user.Email = userDto.Email ?? user.Email;
+
+            // Cập nhật Role nếu có sự thay đổi
+            if (userDto.Role > 0)
+            {
+                user.UserRoles.Clear(); // Xóa các role cũ
+                user.UserRoles.Add(new UserRole { RoleID = userDto.Role, UserID = userId });
+            }
+
+            // Cập nhật thông tin người dùng trong repository
+            _userRepository.Update(user);
+
+            // Lưu các thay đổi
+            await _userRepository.SaveChangesAsync();
+
+            // Phát sự kiện cập nhật người dùng
+            //var userUpdatedEvent = new UserUpdatedEvent(user.ID, user.Email);
+            //_eventBus.Publish(userUpdatedEvent);
         }
+
+
+        public async Task DeleteUserAsync(int userId)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
+                throw new Exception("User not found");
+
+            _userRepository.Delete(user);  // Phương thức này sẽ được định nghĩa trong UserRepository
+            await _userRepository.SaveChangesAsync();
+
+            //var userDeletedEvent = new UserDeletedEvent(user.ID);
+            //_eventBus.Publish(userDeletedEvent);
+        }
+
+        public async Task<Paginate<UserDto>> GetPaginatedUsersAsync(int pageIndex, int pageSize)
+        {
+            var paginatedUsers = await _userRepository.GetPaginatedUsersAsync(pageIndex, pageSize);
+
+            var userDtos = paginatedUsers.Items.Select(u => new UserDto
+            {
+                ID = u.ID,
+                Username = u.Username,
+                Email = u.Email,
+                PhoneNumber = u.UserProfile?.PhoneNumber,
+                FullName = u.UserProfile?.FullName,
+                Address = u.UserProfile?.Address
+            }).ToList();
+
+            return new Paginate<UserDto>(userDtos, paginatedUsers.TotalItems, pageIndex, pageSize);
+        }
+
+        // Hàm băm mật khẩu (có thể dùng các thuật toán băm như SHA-256)
+        private static string HashPassword(string password)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
+                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+            }
+        }
+
     }
 }

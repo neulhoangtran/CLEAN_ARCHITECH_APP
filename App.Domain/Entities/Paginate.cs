@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace App.Domain.Common
+namespace App.Domain
 {
     public class Paginate<T>
     {
@@ -19,5 +19,6 @@ namespace App.Domain.Common
 
         public bool HasPreviousPage => PageIndex > 1;
         public bool HasNextPage => PageIndex < TotalPages;
+
     }
 }

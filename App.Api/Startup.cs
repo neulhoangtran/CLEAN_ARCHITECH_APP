@@ -35,9 +35,6 @@ namespace App.Api
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddScoped(typeof(IPaginateService<>), typeof(PaginateService<>));
-            services.AddScoped(typeof(IPaginateRepository<>), typeof(PaginateRepository<>));
-
 
             // Đăng ký các dịch vụ của Domain Layer
             services.AddScoped<IUserRepository, UserRepository>();  // Đăng ký UserRepository
@@ -51,6 +48,11 @@ namespace App.Api
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, TokenService>(); // Đăng ký TokenService
             services.AddScoped<ITokenRepository, TokenRepository>(); // Đăng ký TokenRepository
+
+            // Đăng ký IRoleService
+            services.AddScoped<IRoleService, RoleService>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+
             // Đăng ký EventBus và Event Handlers
             services.AddSingleton<IEventBus, InMemoryEventBus>();   // Đăng ký InMemoryEventBus
             services.AddTransient<UserRegisteredEventHandler>();    // Đăng ký UserRegisteredEventHandler
