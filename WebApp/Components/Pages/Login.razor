@@ -1,0 +1,119 @@
+﻿@page "/login"
+@using System.ComponentModel.DataAnnotations
+@using WebApp.Models
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+@inject NavigationManager NavigationManager
+@using System.Net.Http.Json
+@inject HttpClient Http
+@rendermode InteractiveServer
+
+<link rel="stylesheet" href="assets/css/login.css" />
+
+@inject ILogger<Login> Logger
+
+<EditForm Model="@loginModel" OnValidSubmit=@HandleValidSubmit >
+    <DataAnnotationsValidator />
+
+    <div class="container login-pages">
+        <div class="row">
+            <div class="col-lg-3 col-md-2"></div>
+            <div class="col-lg-6 col-md-8 login-box">
+                <div class="col-lg-12 login-key">
+                    <i class="fa fa-key" aria-hidden="true"></i>
+                </div>
+                <div class="col-lg-12 login-title">
+                    ADMIN PANEL
+                </div>
+
+                @if (isLoading)
+                {
+                    <div>Loading...</div>
+                }
+
+                <div class="col-lg-12 login-form">
+                    <div class="col-lg-12 login-form">
+                        <div class="form-group">
+                            <label class="form-control-label">USERNAME</label>
+                            <InputText id="Username" @bind-Value="loginModel.Username" type="text" class="form-control p-2" />
+                            <ValidationMessage For="@(() => loginModel.Username)" class="valid-feedback d-block" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label">PASSWORD</label>
+                            <InputText id="Password" @bind-Value="loginModel.Password" type="password" class="form-control p-2" />
+                            <ValidationMessage For="@(() => loginModel.Password)" class="valid-feedback d-block" />
+                        </div>
+
+                        <div class="col-lg-12 loginbttm">
+                            <div class="col-lg-6 login-btm login-text">
+                                <!-- Error Message (Sẽ được hiển thị nếu có) -->
+                            </div>
+                            <div class="col-lg-6 login-btm login-button">
+                                <button class="btn btn-outline-primary" disabled="@isLoading">LOGIN</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="col-lg-12 col-md-12">
+                        <div class="alert alert-danger" role="alert">@errorMessage</div>
+                    </div>
+                }
+
+            </div>
+            <div class="col-lg-3 col-md-2"></div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private LoginModel loginModel { get; set; } = new LoginModel();
+    private bool isLoading = false;
+    private string errorMessage = string.Empty;
+
+    private async Task HandleValidSubmit()
+    {
+        isLoading = true;
+        try
+        {
+            // Gửi yêu cầu đăng nhập đến API
+            var response = await Http.PostAsJsonAsync("/api/auth/login", loginModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // Đọc dữ liệu phản hồi từ API
+                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+                if (result != null)
+                {
+                    // Lưu access token và refresh token vào LocalStorage
+                    await localStorage.SetItemAsync("accessToken", result.Token.AccessToken);
+                    await localStorage.SetItemAsync("refreshToken", result.Token.RefreshToken);
+
+                    // Chuyển hướng đến trang chủ
+                    NavigationManager.NavigateTo("/");
+                }
+            }
+            else
+            {
+                // Xử lý khi đăng nhập thất bại
+                var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+                errorMessage = error?.Message ?? "An error occurred.";
+            }
+        }
+        catch (HttpRequestException httpRequestException)
+        {
+            // Xử lý lỗi kết nối
+            errorMessage = $"Cannot connect to the server: {httpRequestException.Message}";
+        }
+        catch (Exception ex)
+        {
+            // Xử lý lỗi chung
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

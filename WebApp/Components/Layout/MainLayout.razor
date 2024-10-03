@@ -1,9 +1,18 @@
 ﻿@inherits LayoutComponentBase
+@inject AuthenticationStateService AuthenticationStateService
 
 @Body
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
-</div>
+@code {
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            // Đặt trạng thái không còn prerendering
+            AuthenticationStateService.SetPrerenderingState(false);
+
+            // Sau prerendering, đảm bảo người dùng đã đăng nhập
+            await AuthenticationStateService.EnsureUserIsLoggedIn();
+        }
+    }
+}

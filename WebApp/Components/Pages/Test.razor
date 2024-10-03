@@ -1,0 +1,29 @@
+﻿@page "/starship-2"
+@using System.ComponentModel.DataAnnotations
+@using WebApp.Models
+
+ @inject ILogger<Test> Logger
+
+<EditForm Model="Model" OnValidSubmit="Submit" FormName="Starship2">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <label>
+        Identifier:
+        <InputText @bind-Value="Model.Id" />
+    </label>
+    <button type="submit">Submit</button>
+</EditForm>
+
+@code {
+    [SupplyParameterFromForm]
+    private Starship2? Model { get; set; }
+
+    protected override void OnInitialized() => Model ??= new();
+
+    private void Submit()
+    {
+        // Logger.LogInformation("Id = {Id}", Model?.Id);
+    }
+
+    
+}

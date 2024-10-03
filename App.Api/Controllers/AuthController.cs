@@ -66,16 +66,16 @@ namespace App.Api.Controllers
 
                 // Kiểm tra nếu user trả về là null
                 if (token == null)
-                    return Unauthorized(new { Message = "Invalid username or password" });
+                    return Unauthorized(new { message = "Invalid username or password" });
 
                 if (token is not AuthTokenDto)
-                    return Unauthorized(new { Message = "Invalid token, please contact with admin." });
+                    return Unauthorized(new { message = "Invalid token, please contact with admin." });
 
-                return Ok(new { Message = "Login successful", token = token });
+                return Ok(new { message = "Login successful", Token = token });
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Error = ex.Message });
+                return BadRequest(new { message = ex.Message });
             }
         }
     }
