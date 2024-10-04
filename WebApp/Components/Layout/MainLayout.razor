@@ -1,18 +1,36 @@
 ﻿@inherits LayoutComponentBase
 @inject AuthenticationStateService AuthenticationStateService
+@inject ILogger<MainLayout> Logger
 
+    <AuthorizeView>
+    <Authorized>
+        aaaaaaaaaaaaaaaaaaaaaaa
+    </Authorized>
+    <NotAuthorized>
+        bbbbbbbbbbbbbbbbbbbbbb
+    </NotAuthorized>
+
+</AuthorizeView>
 @Body
 
 @code {
+
+    private bool isPrerendering = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Logger.LogInformation("OnInitializedAsync called. Page Loaded.");
+        // await AuthenticationStateService.EnsureUserIsLoggedIn();
+        //isPrerendering = false;  // Khi phương thức này được gọi, có thể coi prerendering đã hoàn tất
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        Logger.LogInformation($"OnAfterRenderAsync called. FirstRender: {firstRender}");
+
         if (firstRender)
         {
-            // Đặt trạng thái không còn prerendering
-            AuthenticationStateService.SetPrerenderingState(false);
 
-            // Sau prerendering, đảm bảo người dùng đã đăng nhập
-            await AuthenticationStateService.EnsureUserIsLoggedIn();
         }
     }
 }

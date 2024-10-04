@@ -1,10 +1,11 @@
 ﻿@page "/login"
+@layout WebApp.Components.Layout.LoginLayout
 @using System.ComponentModel.DataAnnotations
 @using WebApp.Models
-@inject Blazored.LocalStorage.ILocalStorageService localStorage
 @inject NavigationManager NavigationManager
 @using System.Net.Http.Json
 @inject HttpClient Http
+@inject AuthenticationStateService AuthenticationStateService
 @rendermode InteractiveServer
 
 <link rel="stylesheet" href="assets/css/login.css" />
@@ -22,13 +23,8 @@
                     <i class="fa fa-key" aria-hidden="true"></i>
                 </div>
                 <div class="col-lg-12 login-title">
-                    ADMIN PANEL
+                    LOGIN / 로그인
                 </div>
-
-                @if (isLoading)
-                {
-                    <div>Loading...</div>
-                }
 
                 <div class="col-lg-12 login-form">
                     <div class="col-lg-12 login-form">
@@ -84,13 +80,9 @@
                 // Đọc dữ liệu phản hồi từ API
                 var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
 
-                if (result != null)
+                if (result != null && !string.IsNullOrEmpty(result.Token.AccessToken))
                 {
-                    // Lưu access token và refresh token vào LocalStorage
-                    await localStorage.SetItemAsync("accessToken", result.Token.AccessToken);
-                    await localStorage.SetItemAsync("refreshToken", result.Token.RefreshToken);
-
-                    // Chuyển hướng đến trang chủ
+                    await AuthenticationStateService.LoginAsync(result.Token.AccessToken);
                     NavigationManager.NavigateTo("/");
                 }
             }

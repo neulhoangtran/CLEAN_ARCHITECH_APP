@@ -78,5 +78,13 @@ namespace App.Api.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+
+        [Authorize]
+        [HttpGet("validate")]
+        public IActionResult ValidateToken()
+        {
+            // Nếu token hợp lệ thì trả về 200 OK
+            return Ok();
+        }
     }
 }

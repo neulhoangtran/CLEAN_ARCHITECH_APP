@@ -1,7 +1,20 @@
 ﻿using WebApp.Components;
 using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
+using System.Security.Claims;
+using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Cấu hình logging vào console
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
+builder.Services.AddAuthorizationCore();
+// Đăng ký dịch vụ AuthenticationStateService
+builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationStateService>();
+builder.Services.AddScoped<AuthenticationStateService>();
+
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
@@ -14,7 +27,6 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["ApiSettings:API_URL"]) });
-builder.Services.AddScoped<AuthenticationStateService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
