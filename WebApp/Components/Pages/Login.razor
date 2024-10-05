@@ -70,38 +70,28 @@
     private async Task HandleValidSubmit()
     {
         isLoading = true;
+        errorMessage = string.Empty;
+
         try
         {
-            // Gửi yêu cầu đăng nhập đến API
-            var response = await Http.PostAsJsonAsync("/api/auth/login", loginModel);
+            // Gọi LoginAsync và nhận kết quả
+            var loginResult = await AuthenticationStateService.LoginAsync(loginModel.Username, loginModel.Password);
 
-            if (response.IsSuccessStatusCode)
+            if (loginResult.Success)
             {
-                // Đọc dữ liệu phản hồi từ API
-                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
-
-                if (result != null && !string.IsNullOrEmpty(result.Token.AccessToken))
-                {
-                    await AuthenticationStateService.LoginAsync(result.Token.AccessToken);
-                    NavigationManager.NavigateTo("/");
-                }
+                // Điều hướng đến trang chủ sau khi đăng nhập thành công
+                NavigationManager.NavigateTo("/");
             }
             else
             {
-                // Xử lý khi đăng nhập thất bại
-                var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
-                errorMessage = error?.Message ?? "An error occurred.";
+                // Hiển thị thông báo lỗi từ kết quả trả về
+                errorMessage = loginResult.Message;
             }
-        }
-        catch (HttpRequestException httpRequestException)
-        {
-            // Xử lý lỗi kết nối
-            errorMessage = $"Cannot connect to the server: {httpRequestException.Message}";
         }
         catch (Exception ex)
         {
-            // Xử lý lỗi chung
-            errorMessage = $"An error occurred: {ex.Message}";
+            // Xử lý lỗi ngoại lệ và hiển thị thông báo
+            errorMessage = ex.Message;
         }
         finally
         {

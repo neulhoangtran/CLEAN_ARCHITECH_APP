@@ -6,11 +6,26 @@ using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Thêm dịch vụ xác thực
+builder.Services.AddAuthentication("CookieAuth")
+    .AddCookie("CookieAuth", options =>
+    {
+        options.LoginPath = "/login"; // Đường dẫn tới trang đăng nhập của bạn
+    });
+
+// Thêm dịch vụ ủy quyền (Authorization)
+builder.Services.AddAuthorization(options =>
+{
+    // Cấu hình chính sách xác thực nếu cần (ví dụ theo vai trò)
+    options.AddPolicy("RequireAdmin", policy => policy.RequireRole("Admin"));
+});
+
 // Cấu hình logging vào console
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 builder.Services.AddAuthorizationCore();
+builder.Services.AddHttpContextAccessor();
 // Đăng ký dịch vụ AuthenticationStateService
 builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationStateService>();
 builder.Services.AddScoped<AuthenticationStateService>();
