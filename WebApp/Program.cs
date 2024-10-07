@@ -1,4 +1,5 @@
 ﻿using WebApp.Components;
+using WebApp.Middlewares;
 using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
@@ -19,6 +20,7 @@ builder.Services.AddAuthorization(options =>
     // Cấu hình chính sách xác thực nếu cần (ví dụ theo vai trò)
     options.AddPolicy("RequireAdmin", policy => policy.RequireRole("Admin"));
 });
+
 
 // Cấu hình logging vào console
 builder.Logging.ClearProviders();
@@ -51,6 +53,10 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+// Thêm middleware xác thực trước khi sử dụng các thành phần khác
+app.UseMiddleware<AuthenticationMiddleware>();
+// Thêm middleware lưu token vào cookie
+app.UseMiddleware<SaveTokenMiddleware>();
 
 app.UseHttpsRedirection();
 

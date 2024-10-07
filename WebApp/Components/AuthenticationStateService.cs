@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using WebApp.Models;
+using Microsoft.Extensions.Logging;
 
 namespace WebApp.Components
 {
@@ -11,11 +12,13 @@ namespace WebApp.Components
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly HttpClient _httpClient;
         private readonly AuthenticationState _anonymous;
+        private readonly ILogger<AuthenticationStateService> _logger;
 
-        public AuthenticationStateService(IHttpContextAccessor httpContextAccessor, HttpClient httpClient)
+        public AuthenticationStateService(IHttpContextAccessor httpContextAccessor, HttpClient httpClient, ILogger<AuthenticationStateService> logger)
         {
             _httpContextAccessor = httpContextAccessor;
             _httpClient = httpClient;
+            _logger = logger; // Khởi tạo logger
             _anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
@@ -48,31 +51,37 @@ namespace WebApp.Components
 
                 if (response.IsSuccessStatusCode)
                 {
+                    _logger.LogInformation("test --- 000000");
                     var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
-
+                    _logger.LogInformation("test --- 11111111111");
                     if (result != null && !string.IsNullOrEmpty(result.Token.AccessToken))
                     {
-                        if (_httpContextAccessor.HttpContext.Response.HasStarted)
-                        {
-                            throw new InvalidOperationException("Cannot modify cookies after response has started.");
-                        }
+                        //if (_httpContextAccessor.HttpContext.Response.HasStarted)
+                        //{
+                        //    throw new InvalidOperationException("Cannot modify cookies after response has started.");
+                        //}
 
+                        _logger.LogInformation("test --- 1");
                         // Lưu token vào Cookies
                         var cookieOptions = new CookieOptions
                         {
                             HttpOnly = true,
                             Secure = true,
-                            Expires = DateTimeOffset.Now.AddDays(7) // Tùy chọn thời gian hết hạn của cookie
+                            Expires = DateTimeOffset.Now.AddDays(7), // Tùy chọn thời gian hết hạn của cookie
                         };
 
                         // Thêm token vào cookie
                         _httpContextAccessor.HttpContext.Response.Cookies.Append("accessToken", result.Token.AccessToken, cookieOptions);
 
+                        _logger.LogInformation("test --- 2");
+
                         // Thêm token vào header cho các yêu cầu HTTP tiếp theo
                         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", result.Token.AccessToken);
 
+                        _logger.LogInformation("test --- 3");
                         // Cập nhật trạng thái xác thực
                         NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
+                        _logger.LogInformation("test --- 4");
 
                         return new LoginResponse { Success = true, Message = "Login successful" };
                     }
