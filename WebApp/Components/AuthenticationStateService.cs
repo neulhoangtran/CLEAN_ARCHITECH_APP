@@ -33,7 +33,7 @@ namespace WebApp.Components
             {
                 return Task.FromResult(_anonymous);
             }
-
+            _logger.LogInformation("test --- 1111");
             // Thêm token vào header để xác thực cho các yêu cầu HTTP
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 

@@ -30,14 +30,14 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddHttpContextAccessor();
 // Đăng ký dịch vụ AuthenticationStateService
 builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationStateService>();
-builder.Services.AddScoped<AuthenticationStateService>();
+//builder.Services.AddScoped<AuthenticationStateService>();
 
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
-// Đăng ký Blazored.LocalStorage
+// Đăng ký Blazored.LocalStorage    
 builder.Services.AddBlazoredLocalStorage();
 
 // Thêm cấu hình Logging để theo dõi lỗi chi tiết hơn
@@ -55,8 +55,6 @@ if (!app.Environment.IsDevelopment())
 }
 // Thêm middleware xác thực trước khi sử dụng các thành phần khác
 app.UseMiddleware<AuthenticationMiddleware>();
-// Thêm middleware lưu token vào cookie
-app.UseMiddleware<SaveTokenMiddleware>();
 
 app.UseHttpsRedirection();
 
