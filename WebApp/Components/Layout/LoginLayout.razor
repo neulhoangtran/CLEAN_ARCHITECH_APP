@@ -1,22 +1,5 @@
 ﻿@inherits LayoutComponentBase
-@inject AuthenticationStateService AuthenticationStateService
 @inject ILogger<LoginLayout> Logger
-
-@Body
-
-@code {
-
-    private bool isPrerendering = true;
-
-    protected override async Task OnInitializedAsync()
-    {
-        Logger.LogInformation("Login Layout on init called. Page Loaded.");
-        
-        //isPrerendering = false;  // Khi phương thức này được gọi, có thể coi prerendering đã hoàn tất
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-       
-    }
-}
+<CascadingAuthenticationState>
+    @Body
+</CascadingAuthenticationState>

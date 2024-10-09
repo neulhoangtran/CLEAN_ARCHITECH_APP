@@ -1,5 +1,13 @@
 ﻿@inherits LayoutComponentBase
 @inject ILogger<MainLayout> Logger
+@using WebApp.Components.Shared
 
-
-@Body
+<Header />
+<div id="layoutSidenav">
+    <NavMenu />
+    <div id="layoutSidenav_content">
+        @Body
+        <Footer />
+    </div>
+</div>
+    

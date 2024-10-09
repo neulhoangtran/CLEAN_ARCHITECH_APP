@@ -1,0 +1,263 @@
+﻿.formal-form {
+    border: 2px solid rgb(0, 0, 0);
+    margin: 60px 0;
+}
+
+    .formal-form p {
+        float: left;
+    }
+
+.fisrtData {
+    width: 100%;
+    position: relative;
+    margin: auto;
+}
+
+    .fisrtData b {
+        float: left;
+        font-weight: bold;
+        padding: 20px 70px;
+    }
+
+.table-view-1 {
+}
+
+.table-view-2 {
+}
+
+.table-view-1 th:first-child {
+    border-left: 1px solid rgb(0, 0, 0);
+}
+
+.table-view-1 th {
+    border-right: 1px solid rgb(0, 0, 0);
+    border-bottom: 1px solid rgb(0, 0, 0);
+    padding: 0 25px;
+}
+
+    .table-view-1 th:last-child {
+        border-right: 0px;
+    }
+
+.formal-form {
+    width: 768px;
+}
+
+.table-view-2 td:first-child {
+    border-left: 1px solid rgb(0, 0, 0);
+}
+
+.table-view-2 td {
+    border-right: 1px solid rgb(0, 0, 0);
+    border-bottom: 1px solid rgb(0, 0, 0);
+    padding: 10px 45.5px;
+}
+
+    .table-view-2 td:last-child {
+        border-right: 0px;
+    }
+
+.NextData1 p:first-child {
+    margin: 10px 0 0 0;
+    border-top: 2px solid rgb(0, 0, 0);
+    border-bottom: 2px solid rgb(0, 0, 0);
+    border-right: 2px solid rgb(0, 0, 0);
+}
+
+.NextData1 p:last-child {
+    margin: 10px 0 0 0;
+    border-top: 2px solid rgb(0, 0, 0);
+    border-bottom: 2px solid rgb(0, 0, 0);
+}
+
+.NextData1 p {
+    float: left;
+    width: 50%;
+}
+
+.NextData2 {
+    float: left;
+    width: 100%;
+    text-align: left;
+}
+
+.NextData3 p {
+    width: 50%;
+    border-top: 1px solid rgb(0, 0, 0);
+    border-bottom: 1px solid rgb(0, 0, 0);
+    border-right: 1px solid rgb(0, 0, 0);
+}
+
+.NextData3 td:first-child {
+    border-left: 0px;
+}
+
+.NextData3 td {
+    padding: 0 14.966px;
+    border: 1px solid rgb(0, 0, 0);
+    border-right: 0px;
+}
+
+.NextData4 {
+    width: 100%;
+    float: left;
+    border-bottom: 1px solid rgb(0, 0, 0);
+}
+
+    .NextData4 .dup-col {
+        width: 50%;
+        float: left;
+        border-right: 1px solid rgb(0, 0, 0);
+    }
+
+        .NextData4 .dup-col:last-child {
+            border-right: 0px;
+        }
+
+        .NextData4 .dup-col p {
+            width: 50%;
+            border-right: 1px solid rgb(0, 0, 0);
+        }
+
+            .NextData4 .dup-col p:last-child {
+                border-right: 0px;
+            }
+
+.NextData5 .dup-col {
+    width: 50%;
+    float: left;
+}
+
+    .NextData5 .dup-col th {
+        width: calc(25% - 1px);
+        float: left;
+    }
+
+        .NextData5 .dup-col th:first-child {
+            height: 297px;
+            border-right: 1px solid rgb(0, 0, 0);
+            padding-top: 140px;
+        }
+
+        .NextData5 .dup-col th:nth-child(2) {
+            height: 54px;
+            padding-top: 13px;
+            border-bottom: 1px solid rgb(0, 0, 0);
+        }
+
+        .NextData5 .dup-col th:nth-child(5) {
+            height: 240px;
+            padding-top: 108px;
+        }
+
+    .NextData5 .dup-col .tab-warning td {
+        width: auto;
+        padding: 1px 29.28px;
+        border-left: 0px;
+    }
+
+        .NextData5 .dup-col .tab-warning td:last-child {
+            border-right: 0px;
+        }
+
+    .NextData5 .dup-col td {
+        width: calc(50% + 2px);
+        float: left;
+        border-right: 1px solid rgb(0, 0, 0);
+        border-bottom: 1px solid rgb(0, 0, 0);
+        border-left: 1px solid rgb(0, 0, 0);
+    }
+
+.NextData6 {
+    float: left;
+    width: 100%;
+    text-align: left;
+    border-top: 1px solid rgb(0, 0, 0);
+}
+
+.NextData7 .dup-col {
+    width: 50%;
+    float: left;
+}
+
+    .NextData7 .dup-col th {
+        width: calc(25% - 1px);
+        float: left;
+    }
+
+        .NextData7 .dup-col th:first-child {
+            height: 351px;
+            border-right: 1px solid rgb(0, 0, 0);
+            padding-top: 164px;
+        }
+
+        .NextData7 .dup-col th:nth-child(2) {
+            border-bottom: 1px solid rgb(0, 0, 0);
+        }
+
+        .NextData7 .dup-col th:nth-child(4) {
+            height: 216px;
+            padding-top: 96px;
+            border-bottom: 1px solid rgb(0, 0, 0);
+        }
+
+        .NextData7 .dup-col th:nth-child(13) {
+            height: 81px;
+            border-bottom: 1px solid rgb(0, 0, 0);
+        }
+
+    .NextData7 .dup-col .tab-warning td {
+        width: auto;
+        padding: 1px 29.28px;
+        border-left: 0px;
+    }
+
+        .NextData7 .dup-col .tab-warning td:last-child {
+            border-right: 0px;
+        }
+
+    .NextData7 .dup-col td {
+        width: calc(50% + 2px);
+        float: left;
+        border-right: 1px solid rgb(0, 0, 0);
+        border-bottom: 1px solid rgb(0, 0, 0);
+        border-left: 1px solid rgb(0, 0, 0);
+    }
+
+.NextData8 p {
+    width: 50%;
+    border-top: 1px solid rgb(0, 0, 0);
+    border-right: 1px solid rgb(0, 0, 0);
+    padding: 1.3px;
+}
+
+.NextData8 td:first-child {
+    border-left: 0px;
+}
+
+.NextData8 td {
+    padding: 1px 17px;
+    border: 1px solid rgb(0, 0, 0);
+    border-right: 0px;
+}
+
+.NextData9 {
+    float: left;
+    width: 100%;
+    text-align: left;
+    border-top: 1px solid rgb(0, 0, 0);
+}
+
+    .NextData9 .col-num {
+        width: 16%;
+        float: left;
+        text-align: center;
+        padding-left: 50px;
+        border-right: 1px solid;
+    }
+
+.BtnEdit {
+    float: left;
+    position: absolute;
+    bottom: -650px;
+}

@@ -1,0 +1,47 @@
+﻿<div id="layoutSidenav_nav">
+    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+        <div class="sb-sidenav-menu">
+            <div class="nav">
+                <a class="nav-link" href="index.html">
+                    <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                    Dashboard
+                </a>
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseUser" aria-expanded="false" aria-controls="collapseUser">
+                    <div class="sb-nav-link-icon"><i class="fas fa-user"></i></div>
+                    User
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+                <div class="collapse" id="collapseUser" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="/user">Danh sách user</a>
+                        <a class="nav-link" href="">Phân quyền User</a>
+                        <a class="nav-link" href="">Cài đặt quyền truy cập</a>
+                    </nav>
+                </div>
+
+                <a class="nav-link" href="/checklist">
+                    <div class="sb-nav-link-icon"><i class="fas fa-list-check"></i></div>
+                    Checklist
+                </a>
+
+                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseMeeting" aria-expanded="false" aria-controls="collapseMeeting">
+                    <div class="sb-nav-link-icon"><i class="fas fa-calendar-days"></i></div>
+                    Meeting
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a>
+                <div class="collapse" id="collapseMeeting" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav">
+                        <a class="nav-link" href="">Meeting 1</a>
+                        <a class="nav-link" href="">Meeting 2</a>
+                        <a class="nav-link" href="">Meeting 3</a>
+                    </nav>
+                </div>
+                
+            </div>
+        </div>
+        <div class="sb-sidenav-footer">
+            <div class="small">Logged in as:</div>
+            Start Bootstrap
+        </div>
+    </nav>
+</div>

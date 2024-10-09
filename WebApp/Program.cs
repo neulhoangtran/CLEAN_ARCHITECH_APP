@@ -44,6 +44,8 @@ builder.Services.AddBlazoredLocalStorage();
 builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.Configuration["ApiSettings:API_URL"]) });
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

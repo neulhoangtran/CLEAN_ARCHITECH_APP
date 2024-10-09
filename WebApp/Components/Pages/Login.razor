@@ -6,85 +6,70 @@
 @inject NavigationManager NavigationManager
 @using System.Net.Http.Json
 @inject HttpClient Http
-@inject AuthenticationStateService AuthenticationStateService
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@rendermode InteractiveServer
+@inject IJSRuntime jsRuntime
 
 <link rel="stylesheet" href="assets/css/login.css" />
 
 @inject ILogger<Login> Logger
 
-<AuthorizeView>
-    <Authorized>
-        @* Nếu người dùng đã đăng nhập, chuyển hướng về trang khác *@
-        @code {
-            protected override void OnInitialized()
-            {
-                NavigationManager.NavigateTo("/"); // Ví dụ chuyển hướng về trang dashboard nếu đã đăng nhập
-            }
-        }
-    </Authorized>
-    <NotAuthorized>
-        <EditForm Model="@loginModel" OnValidSubmit=@HandleValidSubmit Context="editFormContext">
-            <DataAnnotationsValidator />
+<EditForm Model="@loginModel" OnValidSubmit=@HandleValidSubmit Context="editFormContext">
+    <DataAnnotationsValidator />
 
-            <div class="container login-pages">
-                <div class="row">
-                    <div class="col-lg-3 col-md-2"></div>
-                    <div class="col-lg-6 col-md-8 login-box">
-                        <div class="col-lg-12 login-key">
-                            <i class="fa fa-key" aria-hidden="true"></i>
-                        </div>
-                        <div class="col-lg-12 login-title">
-                            LOGIN / 로그인
-                        </div>
-
-                        <div class="col-lg-12 login-form">
-                            <div class="col-lg-12 login-form">
-                                <div class="form-group">
-                                    <label class="form-control-label">USERNAME</label>
-                                    <InputText id="Username" @bind-Value="loginModel.Username" type="text" class="form-control p-2" />
-                                    <ValidationMessage For="@(() => loginModel.Username)" class="valid-feedback d-block" />
-                                </div>
-                                <div class="form-group">
-                                    <label class="form-control-label">PASSWORD</label>
-                                    <InputText id="Password" @bind-Value="loginModel.Password" type="password" class="form-control p-2" />
-                                    <ValidationMessage For="@(() => loginModel.Password)" class="valid-feedback d-block" />
-                                </div>
-
-                                <div class="col-lg-12 loginbttm">
-                                    <div class="col-lg-6 login-btm login-text">
-                                        <!-- Error Message (Sẽ được hiển thị nếu có) -->
-                                    </div>
-                                    <div class="col-lg-6 login-btm login-button">
-                                        <button class="btn btn-outline-primary" disabled="@isLoading">
-                                            @if (isLoading)
-                                            {
-                                                <span>LOGGING...</span>
-                                            }
-                                            else
-                                            {
-                                                <span>LOGIN</span>
-                                            }
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        @if (!string.IsNullOrEmpty(errorMessage))
-                        {
-                            <div class="col-lg-12 col-md-12">
-                                <div class="alert alert-danger" role="alert">@errorMessage</div>
-                            </div>
-                        }
-
-                    </div>
-                    <div class="col-lg-3 col-md-2"></div>
+    <div class="container login-pages">
+        <div class="row">
+            <div class="col-lg-3 col-md-2"></div>
+            <div class="col-lg-6 col-md-8 login-box">
+                <div class="col-lg-12 login-key">
+                    <i class="fa fa-key" aria-hidden="true"></i>
                 </div>
+                <div class="col-lg-12 login-title">
+                    LOGIN / 로그인
+                </div>
+
+                <div class="col-lg-12 login-form">
+                    <div class="col-lg-12 login-form">
+                        <div class="form-group">
+                            <label class="form-control-label">USERNAME</label>
+                            <InputText id="Username" @bind-Value="loginModel.Username" type="text" class="form-control p-2" />
+                            <ValidationMessage For="@(() => loginModel.Username)" class="valid-feedback d-block" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label">PASSWORD</label>
+                            <InputText id="Password" @bind-Value="loginModel.Password" type="password" class="form-control p-2" />
+                            <ValidationMessage For="@(() => loginModel.Password)" class="valid-feedback d-block" />
+                        </div>
+
+                        <div class="col-lg-12 loginbttm">
+                            <div class="col-lg-6 login-btm login-text">
+                                <!-- Error Message (Sẽ được hiển thị nếu có) -->
+                            </div>
+                            <div class="col-lg-6 login-btm login-button">
+                                <button class="btn btn-outline-primary" disabled="@isLoading">
+                                    @if (isLoading)
+                                    {
+                                        <span>LOGGING...</span>
+                                    }
+                                    else
+                                    {
+                                        <span>LOGIN</span>
+                                    }
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="col-lg-12 col-md-12">
+                        <div class="alert alert-danger" role="alert">@errorMessage</div>
+                    </div>
+                }
+
             </div>
-        </EditForm>
-    </NotAuthorized>
-</AuthorizeView>
+            <div class="col-lg-3 col-md-2"></div>
+        </div>
+    </div>
+</EditForm>
 @code {
     private LoginModel loginModel { get; set; } = new LoginModel();
     private bool isLoading = false;
@@ -94,27 +79,46 @@
     {
         isLoading = true;
         errorMessage = string.Empty;
-        await Task.Delay(1000);
+
+        await Task.Delay(1000); // Tạo độ trễ để mô phỏng quá trình đăng nhập
+
         try
         {
-            // Gọi LoginAsync và nhận kết quả
-            var loginResult = await AuthenticationStateService.LoginAsync(loginModel.Username, loginModel.Password);
+            // Tạo payload để gửi yêu cầu đăng nhập
+            var loginModelPayload = new { Username = loginModel.Username, Password = loginModel.Password };
 
-            if (loginResult.Success)
+            // Gửi yêu cầu đăng nhập đến API
+            var response = await Http.PostAsJsonAsync("/api/auth/login", loginModelPayload);
+
+            if (response.IsSuccessStatusCode)
             {
-                // Điều hướng đến trang chủ sau khi đăng nhập thành công
-                NavigationManager.NavigateTo("/");
+                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+                if (result != null && !string.IsNullOrEmpty(result.Token.AccessToken))
+                {
+                    Logger.LogInformation("Login successful, saving token to cookies via JS Interop.");
+
+                    // Lưu token vào cookies thông qua JavaScript Interop
+                    await jsRuntime.InvokeVoidAsync("setCookie", "accessToken", result.Token.AccessToken, 7);
+
+                    // Điều hướng đến trang chủ sau khi đăng nhập thành công
+                    NavigationManager.NavigateTo("/");
+                }
+                else
+                {
+                    errorMessage = "Invalid login response.";
+                }
             }
             else
             {
-                // Hiển thị thông báo lỗi từ kết quả trả về
-                errorMessage = loginResult.Message;
+                errorMessage = "Login failed. Please check your credentials.";
             }
         }
         catch (Exception ex)
         {
             // Xử lý lỗi ngoại lệ và hiển thị thông báo
-            errorMessage = ex.Message;
+            errorMessage = $"Login error: {ex.Message}";
+            Logger.LogError(ex, "Error occurred during login.");
         }
         finally
         {
