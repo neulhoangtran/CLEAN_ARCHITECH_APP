@@ -1,10 +1,5 @@
 ﻿
-body {
-    background: #222D32;
-    font-family: 'Roboto', sans-serif;
-}
-
-.login-box {
+.login-component .login-box {
     margin-top: 75px;
     height: auto;
     background: #1A2226;
@@ -12,7 +7,7 @@ body {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
 }
 
-.login-key {
+.login-component  .login-key {
     height: 100px;
     font-size: 80px;
     line-height: 100px;
@@ -21,7 +16,7 @@ body {
     -webkit-text-fill-color: transparent;
 }
 
-.login-title {
+.login-component .login-title {
     margin-top: 15px;
     text-align: center;
     font-size: 30px;
@@ -31,12 +26,12 @@ body {
     color: #ECF0F5;
 }
 
-.login-form {
+.login-component .login-form {
     margin-top: 25px;
     text-align: left;
 }
 
-input[type=text] {
+.login-component  input[type=text] {
     background-color: #1A2226;
     border: none;
     border-bottom: 2px solid #0DB8DE;
@@ -49,7 +44,7 @@ input[type=text] {
     color: #ECF0F5;
 }
 
-input[type=password] {
+.login-component  input[type=password] {
     background-color: #1A2226;
     border: none;
     border-bottom: 2px solid #0DB8DE;
@@ -62,12 +57,12 @@ input[type=password] {
     color: #ECF0F5;
 }
 
-.form-group {
+.login-component  .form-group {
     margin-bottom: 40px;
     outline: 0px;
 }
 
-.form-control:focus {
+.login-component  .form-control:focus {
     border-color: inherit;
     -webkit-box-shadow: none;
     box-shadow: none;
@@ -77,23 +72,23 @@ input[type=password] {
     color: #ECF0F5;
 }
 
-input:focus {
+.login-component  input:focus {
     outline: none;
     box-shadow: 0 0 0;
 }
 
-label {
+.login-component  label {
     margin-bottom: 0px;
 }
 
-.form-control-label {
+.login-component  .form-control-label {
     font-size: 10px;
     color: #6C6C6C;
     font-weight: bold;
     letter-spacing: 1px;
 }
 
-.btn-outline-primary {
+.login-component .btn-outline-primary {
     border-color: #0DB8DE;
     color: #0DB8DE;
     border-radius: 0px;
@@ -102,27 +97,32 @@ label {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
 }
 
-    .btn-outline-primary:hover {
-        background-color: #0DB8DE;
-        right: 0px;
-    }
+.login-component .btn-outline-primary:hover {
+    background-color: #0DB8DE;
+    right: 0px;
+}
 
-.login-btm {
+.login-component .login-btm {
     float: left;
 }
 
-.login-button {
+.login-component .login-button {
     padding-right: 0px;
     text-align: right;
     margin-bottom: 25px;
 }
 
-.login-text {
+.login-component .login-text {
     text-align: left;
     padding-left: 0px;
     color: #A2A4A4;
 }
 
-.loginbttm {
+.login-component .loginbttm {
     padding: 0px;
+}
+
+.login-component {
+    height: 100%;
+    background: #222D32;
 }

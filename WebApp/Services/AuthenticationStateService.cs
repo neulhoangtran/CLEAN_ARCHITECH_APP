@@ -6,7 +6,7 @@ using WebApp.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
-namespace WebApp.Components
+namespace WebApp.Services
 {
     public class AuthenticationStateService : AuthenticationStateProvider
     {

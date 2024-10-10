@@ -4,6 +4,7 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
 using System.Security.Claims;
 using System.Net.Http.Headers;
+using WebApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,13 +22,31 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("RequireAdmin", policy => policy.RequireRole("Admin"));
 });
 
+//đăng ký Các Service để có thể sử dụng ở mọi nơi trong ứng dụng.
+builder.Services.AddScoped<LayoutService>();
+builder.Services.AddScoped<UserService>();
 
 // Cấu hình logging vào console
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 builder.Services.AddAuthorizationCore();
+
+
+
+// Đăng ký IHttpContextAccessor để truy cập HttpContext trong TokenExpirationHandler
 builder.Services.AddHttpContextAccessor();
+
+// Đăng ký TokenExpirationHandler và HttpClient
+builder.Services.AddTransient<TokenExpirationHandler>();
+
+// Đăng ký HttpClient với TokenExpirationHandler
+builder.Services.AddHttpClient<UserService>(client =>
+{
+    client.BaseAddress = new Uri(builder.Configuration["ApiSettings:API_URL"]); // Set BaseAddress từ appsettings
+})
+.AddHttpMessageHandler<TokenExpirationHandler>();
+
 // Đăng ký dịch vụ AuthenticationStateService
 builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationStateService>();
 //builder.Services.AddScoped<AuthenticationStateService>();
