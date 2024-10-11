@@ -52,11 +52,11 @@
                                 <button class="btn btn-outline-primary" disabled="@isLoading">
                                     @if (isLoading)
                                     {
-                                        <span>LOGGING...</span>
+                                            <span>LOGGING...</span>
                                     }
                                     else
                                     {
-                                        <span>LOGIN</span>
+                                            <span>LOGIN</span>
                                     }
                                 </button>
                             </div>
@@ -65,9 +65,9 @@
                 </div>
                 @if (!string.IsNullOrEmpty(errorMessage))
                 {
-                    <div class="col-lg-12 col-md-12">
-                        <div class="alert alert-danger" role="alert">@errorMessage</div>
-                    </div>
+                        <div class="col-lg-12 col-md-12">
+                            <div class="alert alert-danger" role="alert">@errorMessage</div>
+                        </div>
                 }
                 <div class="col-lg-3 col-md-2"></div>
             </div>
@@ -97,11 +97,11 @@
                 Logger.LogInformation("Login thành công, lưu token vào cookie.");
 
                 var cookieOptions = new CookieOptions
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    Expires = DateTimeOffset.Now.AddDays(7)
-                };
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        Expires = DateTimeOffset.Now.AddDays(7)
+                    };
 
                 HttpContextAccessor.HttpContext?.Response.Cookies.Append("accessToken", loginResponse.Token.AccessToken, cookieOptions);
 
