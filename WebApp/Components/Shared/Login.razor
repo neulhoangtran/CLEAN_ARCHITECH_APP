@@ -1,16 +1,15 @@
 ﻿@using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Components.Authorization
 @using WebApp.Models
 @inject NavigationManager NavigationManager
-@using System.Net.Http.Json
-@inject HttpClient Http
-@inject IJSRuntime jsRuntime
 @inject LayoutService LayoutService
+@inject UserService UserService
+@inject ILogger<Login> Logger
+@inject IHttpContextAccessor HttpContextAccessor
 @rendermode InteractiveServer
+
 @code {
     protected override void OnInitialized()
     {
-
         // Thiết lập CSS class cho layout
         LayoutService.SetCssClass("home-layout-class");
     }
@@ -18,23 +17,21 @@
 
 <link rel="stylesheet" href="assets/css/login.css" />
 
-@inject ILogger<Login> Logger
 <div class="login-component">
-<EditForm Model="@loginModel" OnValidSubmit=@HandleValidSubmit Context="editFormContext" FormName="LoginModel">
-    <DataAnnotationsValidator />
+    <EditForm Model="@loginModel" OnValidSubmit=@HandleValidSubmit>
+        <DataAnnotationsValidator />
 
-    <div class="container login-pages">
-        <div class="row">
-            <div class="col-lg-3 col-md-2"></div>
-            <div class="col-lg-6 col-md-8 login-box">
-                <div class="col-lg-12 login-key">
-                    <i class="fa fa-key" aria-hidden="true"></i>
-                </div>
-                <div class="col-lg-12 login-title">
-                    LOGIN / 로그인
-                </div>
+        <div class="container login-pages">
+            <div class="row">
+                <div class="col-lg-3 col-md-2"></div>
+                <div class="col-lg-6 col-md-8 login-box">
+                    <div class="col-lg-12 login-key">
+                        <i class="fa fa-key" aria-hidden="true"></i>
+                    </div>
+                    <div class="col-lg-12 login-title">
+                        LOGIN / 로그인
+                    </div>
 
-                <div class="col-lg-12 login-form">
                     <div class="col-lg-12 login-form">
                         <div class="form-group">
                             <label class="form-control-label">USERNAME</label>
@@ -72,13 +69,12 @@
                         <div class="alert alert-danger" role="alert">@errorMessage</div>
                     </div>
                 }
-
+                <div class="col-lg-3 col-md-2"></div>
             </div>
-            <div class="col-lg-3 col-md-2"></div>
         </div>
-    </div>
-</EditForm>
+    </EditForm>
 </div>
+
 @code {
     private LoginModel loginModel { get; set; } = new LoginModel();
     private bool isLoading = false;
@@ -93,41 +89,36 @@
 
         try
         {
-            // Tạo payload để gửi yêu cầu đăng nhập
-            var loginModelPayload = new { Username = loginModel.Username, Password = loginModel.Password };
+            // Gọi UserService để xử lý đăng nhập
+            var loginResponse = await UserService.LoginAsync(loginModel.Username, loginModel.Password);
 
-            // Gửi yêu cầu đăng nhập đến API
-            var response = await Http.PostAsJsonAsync("/api/auth/login", loginModelPayload);
-
-            if (response.IsSuccessStatusCode)
+            if (loginResponse.Success)
             {
-                var result = await response.Content.ReadFromJsonAsync<LoginResponse>();
+                Logger.LogInformation("Login thành công, lưu token vào cookie.");
 
-                if (result != null && !string.IsNullOrEmpty(result.Token.AccessToken))
+                var cookieOptions = new CookieOptions
                 {
-                    Logger.LogInformation("Login successful, saving token to cookies via JS Interop.");
+                    HttpOnly = true,
+                    Secure = true,
+                    Expires = DateTimeOffset.Now.AddDays(7)
+                };
 
-                    // Lưu token vào cookies thông qua JavaScript Interop
-                    await jsRuntime.InvokeVoidAsync("setCookie", "accessToken", result.Token.AccessToken, 7);
+                HttpContextAccessor.HttpContext?.Response.Cookies.Append("accessToken", loginResponse.Token.AccessToken, cookieOptions);
 
-                    // Điều hướng đến trang chủ sau khi đăng nhập thành công
-                    NavigationManager.NavigateTo("/");
-                }
-                else
-                {
-                    errorMessage = "Invalid login response.";
-                }
+                // Điều hướng về trang chủ sau khi đăng nhập thành công
+                NavigationManager.NavigateTo("/");
             }
             else
             {
-                errorMessage = "Login failed. Please check your credentials.";
+                // Nếu đăng nhập thất bại, hiển thị thông báo lỗi
+                errorMessage = loginResponse.Message ?? "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.";
             }
         }
         catch (Exception ex)
         {
-            // Xử lý lỗi ngoại lệ và hiển thị thông báo
-            errorMessage = $"Login error: {ex.Message}";
-            Logger.LogError(ex, "Error occurred during login.");
+            // Xử lý lỗi ngoại lệ trong quá trình đăng nhập
+            errorMessage = $"Lỗi đăng nhập: {ex.Message}";
+            Logger.LogError(ex, "Đã xảy ra lỗi trong quá trình đăng nhập.");
         }
         finally
         {

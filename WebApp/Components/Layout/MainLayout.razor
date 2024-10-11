@@ -2,12 +2,12 @@
 @inject ILogger<MainLayout> Logger
 @inject LayoutService LayoutService
 @implements IDisposable
+
 <Header />
 <div id="layoutSidenav">
     <NavMenu />
     <div id="layoutSidenav_content" class="page @LayoutService.BodyClass">
         <main class="container-fluid px-4">
-            
             <AuthorizeView>
                 <Authorized>
                     <h1 class="mt-4">@LayoutService.Title</h1>
@@ -15,7 +15,7 @@
                         @foreach (var item in LayoutService.Breadcrumb)
                         {
                             if (item.IsActive)
-                            {   
+                            {
                                 <li class="breadcrumb-item active">@item.Name</li>
                             }
                             else
@@ -36,13 +36,16 @@
 </div>
 
 @code {
+
     protected override void OnInitialized()
     {
+        Logger.LogInformation("MainLayout initialized. Subscribing to LayoutService OnChange event.");
         LayoutService.OnChange += StateHasChanged;
     }
 
     public void Dispose()
     {
+        Logger.LogInformation("MainLayout disposed. Unsubscribing from LayoutService OnChange event.");
         LayoutService.OnChange -= StateHasChanged;
     }
 }
