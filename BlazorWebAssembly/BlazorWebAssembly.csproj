@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -13,6 +13,7 @@
 	<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="8.0.10" />
 	<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.10" />
 	<PackageReference Include="Microsoft.Extensions.Logging" Version="8.0.1" />
+	<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.1.2" />
   </ItemGroup>
 
 </Project>
