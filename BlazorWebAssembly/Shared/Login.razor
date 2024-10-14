@@ -1,0 +1,122 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using BlazorWebAssembly.Models
+@using Blazored.LocalStorage
+@inject NavigationManager NavigationManager
+@inject LayoutService LayoutService
+@inject UserService UserService
+@inject ILogger<Login> Logger
+@inject ILocalStorageService LocalStorageService
+
+@code {
+    protected override void OnInitialized()
+    {
+        // Thiết lập CSS class cho layout
+        LayoutService.SetCssClass("home-layout-class");
+    }
+}
+
+<link rel="stylesheet" href="assets/css/login.css" />
+
+<div class="login-component">
+    <EditForm Model="@loginModel" OnValidSubmit=@HandleValidSubmit>
+        <DataAnnotationsValidator />
+
+        <div class="container login-pages">
+            <div class="row">
+                <div class="col-lg-3 col-md-2"></div>
+                <div class="col-lg-6 col-md-8 login-box">
+                    <div class="col-lg-12 login-key">
+                        <i class="fa fa-key" aria-hidden="true"></i>
+                    </div>
+                    <div class="col-lg-12 login-title">
+                        LOGIN / 로그인
+                    </div>
+
+                    <div class="col-lg-12 login-form">
+                        <div class="form-group">
+                            <label class="form-control-label">USERNAME</label>
+                            <InputText id="Username" @bind-Value="loginModel.Username" type="text" class="form-control p-2" />
+                            <ValidationMessage For="@(() => loginModel.Username)" class="valid-feedback d-block" />
+                        </div>
+                        <div class="form-group">
+                            <label class="form-control-label">PASSWORD</label>
+                            <InputText id="Password" @bind-Value="loginModel.Password" type="password" class="form-control p-2" />
+                            <ValidationMessage For="@(() => loginModel.Password)" class="valid-feedback d-block" />
+                        </div>
+
+                        <div class="col-lg-12 loginbttm">
+                            <div class="col-lg-6 login-btm login-text">
+                                <!-- Error Message (Sẽ được hiển thị nếu có) -->
+                            </div>
+                            <div class="col-lg-6 login-btm login-button">
+                                <button class="btn btn-outline-primary" disabled="@isLoading">
+                                    @if (isLoading)
+                                    {
+                                        <span>LOGGING...</span>
+                                    }
+                                    else
+                                    {
+                                        <span>LOGIN</span>
+                                    }
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(errorMessage))
+                {
+                    <div class="col-lg-12 col-md-12">
+                        <div class="alert alert-danger" role="alert">@errorMessage</div>
+                    </div>
+                }
+                <div class="col-lg-3 col-md-2"></div>
+            </div>
+        </div>
+    </EditForm>
+</div>
+
+@code {
+    private LoginModel loginModel { get; set; } = new LoginModel();
+    private bool isLoading = false;
+    private string errorMessage = string.Empty;
+
+    private async Task HandleValidSubmit()
+    {
+        isLoading = true;
+        errorMessage = string.Empty;
+
+        await Task.Delay(1000); // Tạo độ trễ để mô phỏng quá trình đăng nhập
+
+        try
+        {
+            // Gọi UserService để xử lý đăng nhập
+            var loginResponse = await UserService.LoginAsync(loginModel.Username, loginModel.Password);
+
+            if (loginResponse.Success)
+            {
+                Logger.LogInformation("Login thành công, lưu token vào LocalStorage.");
+
+                // Lưu token vào LocalStorage
+                await LocalStorageService.SetItemAsync("accessToken", loginResponse.Token.AccessToken);
+
+                // Điều hướng về trang chủ sau khi đăng nhập thành công
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                // Nếu đăng nhập thất bại, hiển thị thông báo lỗi
+                errorMessage = loginResponse.Message ?? "Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin.";
+            }
+        }
+        catch (Exception ex)
+        {
+            // Xử lý lỗi ngoại lệ trong quá trình đăng nhập
+            errorMessage = $"Lỗi đăng nhập: {ex.Message}";
+            Logger.LogError(ex, "Đã xảy ra lỗi trong quá trình đăng nhập.");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}

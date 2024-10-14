@@ -1,0 +1,38 @@
+body {
+    font-family: Roboto;
+    color: #212121;
+    font-size: 13px;
+    line-height: 1.3em;
+}
+
+div#layoutSidenav_content main {
+    height: 100%;
+}
+
+.sb-sidenav .sb-sidenav-menu .nav .nav-link {
+    font-size: 16px;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 2px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+h1 {
+    font-size: 28px;
+}
