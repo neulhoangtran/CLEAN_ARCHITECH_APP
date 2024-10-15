@@ -24,8 +24,10 @@ namespace BlazorWebAssembly.DI
         {
             _logger.LogInformation("Attempting to retrieve authentication state.");
 
-            var token = await _localStorageService.GetItemAsStringAsync(TokenKey);
+            //var token = await _localStorageService.GetItemAsStringAsync("accessToken");
+            var token = (await _localStorageService.GetItemAsStringAsync("accessToken"))?.Trim().Trim('"');
 
+            _logger.LogInformation(token);
             if (string.IsNullOrWhiteSpace(token))
             {
                 _logger.LogWarning("No token found. User is not authenticated.");

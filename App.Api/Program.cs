@@ -18,7 +18,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowBlazorClient", builder =>
     {
         // Định nghĩa URL của ứng dụng Blazor WebAssembly được phép truy cập API này
-        builder.WithOrigins("http://localhost:7264") // URL của Blazor WebAssembly app
+        builder.WithOrigins("https://localhost:7264") // URL của Blazor WebAssembly app
                .AllowAnyMethod()  // Cho phép tất cả các phương thức HTTP (GET, POST, PUT, DELETE, etc.)
                .AllowAnyHeader(); // Cho phép tất cả các header
     });

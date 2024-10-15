@@ -109,9 +109,10 @@ namespace App.Application.Services
             //_eventBus.Publish(userDeletedEvent);
         }
 
-        public async Task<Paginate<UserDto>> GetPaginatedUsersAsync(int pageIndex, int pageSize)
+        public async Task<Paginate<UserDto>> GetPaginatedUsersAsync(int pageIndex, int pageSize, string sortBy = null, string filter = null)
         {
-            var paginatedUsers = await _userRepository.GetPaginatedUsersAsync(pageIndex, pageSize);
+            // Lấy danh sách người dùng phân trang từ repository với sắp xếp và lọc
+            var paginatedUsers = await _userRepository.GetPaginatedUsersAsync(pageIndex, pageSize, sortBy, filter);
 
             var userDtos = paginatedUsers.Items.Select(u => new UserDto
             {

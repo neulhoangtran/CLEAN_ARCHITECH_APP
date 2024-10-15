@@ -58,16 +58,57 @@ namespace App.Infrastructure.Persistence
         {
             return _context.Users.Include(u => u.UserProfile).ToList();
         }
-        public async Task<Paginate<User>> GetPaginatedUsersAsync(int pageIndex, int pageSize)
+        //public async Task<Paginate<User>> GetPaginatedUsersAsync(int pageIndex, int pageSize)
+        //{
+        //    var totalItems = await _context.Users.CountAsync();
+        //    var users = await _context.Users
+        //        .Include(u => u.UserProfile)
+        //        .Skip((pageIndex - 1) * pageSize)
+        //        .Take(pageSize)
+        //        .ToListAsync();
+
+        //    return new Paginate<User>(users, totalItems, pageIndex, pageSize);
+        //}
+        public async Task<Paginate<User>> GetPaginatedUsersAsync(int pageIndex, int pageSize, string sortBy = null, string filter = null)
         {
-            var totalItems = await _context.Users.CountAsync();
-            var users = await _context.Users
-                .Include(u => u.UserProfile)
-                .Skip((pageIndex - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+            var query = _context.Users.Include(u => u.UserProfile) // Nạp thông tin UserProfile
+                                .Include(u => u.UserRoles) // Nạp thông tin các UserRole
+                                .AsQueryable();
+
+            // Nếu có tham số lọc, thêm điều kiện lọc
+            if (!string.IsNullOrEmpty(filter))
+            {
+                query = query.Where(u => u.Username.Contains(filter) || u.Email.Contains(filter));
+            }
+
+            // Sắp xếp theo thuộc tính được chỉ định
+            switch (sortBy)
+            {
+                case "username_asc":
+                    query = query.OrderBy(u => u.Username);
+                    break;
+                case "username_desc":
+                    query = query.OrderByDescending(u => u.Username);
+                    break;
+                case "email_asc":
+                    query = query.OrderBy(u => u.Email);
+                    break;
+                case "email_desc":
+                    query = query.OrderByDescending(u => u.Email);
+                    break;
+                default:
+                    query = query.OrderBy(u => u.ID); // Sắp xếp mặc định theo ID
+                    break;
+            }
+
+            // Lấy tổng số bản ghi trước khi phân trang
+            var totalItems = await query.CountAsync();
+
+            // Phân trang
+            var users = await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
 
             return new Paginate<User>(users, totalItems, pageIndex, pageSize);
         }
+
     }
 }

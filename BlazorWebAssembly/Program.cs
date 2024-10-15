@@ -11,9 +11,13 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+// Bật hiển thị thông tin chi tiết (PII) cho các lỗi JWT
+Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
+
 //đăng ký Các Service để có thể sử dụng ở mọi nơi trong ứng dụng.
 builder.Services.AddScoped<LayoutService>();
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<RoleService>();
 
 // Đăng ký dịch vụ Blazored.LocalStorage
 builder.Services.AddBlazoredLocalStorage();

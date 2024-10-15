@@ -13,6 +13,6 @@ namespace App.Domain.Repositories
         void Delete(User user);
         Task SaveChangesAsync();
         IEnumerable<User> GetAll();
-        Task<Paginate<User>> GetPaginatedUsersAsync(int pageIndex, int pageSize);
+        Task<Paginate<User>> GetPaginatedUsersAsync(int pageIndex, int pageSize, string sortBy = null, string filter = null);
     }
 }

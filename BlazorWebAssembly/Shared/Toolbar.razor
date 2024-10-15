@@ -1,0 +1,73 @@
+﻿<div class="row mb-3 d-flex align-items-center">
+    <!-- FilterBy -->
+    <div class="col-md-6 col-xl-6 mb-2 mb-md-0">
+        <div class="input-group input-group-search" style="max-width:300px">
+            <input type="text" class="form-control border-0  border-bottom" @bind="FilterText" placeholder="@PlaceholderText">
+            <button class="btn" type="button" @onclick="ApplyFilter">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search align-middle">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.3-4.3"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="col-md-6 col-xl-6 text-sm-end d-flex justify-content-end align-items-center gap-2">
+        <div class="input-group input-group-sort d-flex align-items-center gap-1" style="max-width:300px">
+            <label class="form-label m-0">Sort By:</label>
+            <select class="form-select" @onchange="OnSortChanged">
+                @foreach (var option in SortOptions)
+                {
+                    <option value="@option.Value" selected="@(option.Value == SelectedSort)">@(option.Label)</option>
+                }
+            </select>
+        </div>
+        @if (ShowExportButton)
+        {
+            <button type="button" class="btn btn-outline-dark btn-sm me-2" @onclick="OnExportClicked">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" x2="12" y1="15" y2="3"></line>
+                </svg> Export
+            </button>
+        }
+
+        @if (ShowNewButton)
+        {
+            <button type="button" class="btn btn-outline-primary btn-sm" @onclick="OnNewClicked">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus">
+                    <path d="M5 12h14"></path>
+                    <path d="M12 5v14"></path>
+                </svg> New
+            </button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public string FilterText { get; set; }
+    [Parameter] public string PlaceholderText { get; set; } = "Search...";
+    [Parameter] public EventCallback<string> OnFilterChanged { get; set; }
+
+    [Parameter] public List<SortOption> SortOptions { get; set; } = new List<SortOption>();
+    [Parameter] public string SelectedSort { get; set; }
+    [Parameter] public EventCallback<string> OnSortChangedCallback { get; set; }
+
+    [Parameter] public bool ShowExportButton { get; set; } = false;
+    [Parameter] public bool ShowNewButton { get; set; } = false;
+    [Parameter] public EventCallback OnExportClicked { get; set; }
+    [Parameter] public EventCallback OnNewClicked { get; set; }
+
+    private async Task ApplyFilter()
+    {
+        await OnFilterChanged.InvokeAsync(FilterText);
+    }
+
+    private async Task OnSortChanged(ChangeEventArgs e)
+    {
+        SelectedSort = e.Value.ToString();
+        await OnSortChangedCallback.InvokeAsync(SelectedSort);
+    }
+}

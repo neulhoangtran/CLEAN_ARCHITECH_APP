@@ -6,6 +6,8 @@
 @inject UserService UserService
 @inject ILogger<Login> Logger
 @inject ILocalStorageService LocalStorageService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using BlazorWebAssembly.DI
 
 @code {
     protected override void OnInitialized()
@@ -52,11 +54,11 @@
                                 <button class="btn btn-outline-primary" disabled="@isLoading">
                                     @if (isLoading)
                                     {
-                                        <span>LOGGING...</span>
+                                            <span>LOGGING...</span>
                                     }
                                     else
                                     {
-                                        <span>LOGIN</span>
+                                            <span>LOGIN</span>
                                     }
                                 </button>
                             </div>
@@ -65,9 +67,9 @@
                 </div>
                 @if (!string.IsNullOrEmpty(errorMessage))
                 {
-                    <div class="col-lg-12 col-md-12">
-                        <div class="alert alert-danger" role="alert">@errorMessage</div>
-                    </div>
+                        <div class="col-lg-12 col-md-12">
+                            <div class="alert alert-danger" role="alert">@errorMessage</div>
+                        </div>
                 }
                 <div class="col-lg-3 col-md-2"></div>
             </div>
@@ -97,7 +99,11 @@
                 Logger.LogInformation("Login thành công, lưu token vào LocalStorage.");
 
                 // Lưu token vào LocalStorage
-                await LocalStorageService.SetItemAsync("accessToken", loginResponse.Token.AccessToken);
+                await LocalStorageService.SetItemAsync("accessToken", loginResponse.Token.AccessToken.Trim().Trim('"'));
+
+                // Gọi AuthenticationStateService để cập nhật trạng thái xác thực
+                var authStateService = (AuthenticationStateService)AuthenticationStateProvider;
+                authStateService.MarkUserAsAuthenticated(loginResponse.Token.AccessToken);
 
                 // Điều hướng về trang chủ sau khi đăng nhập thành công
                 NavigationManager.NavigateTo("/");

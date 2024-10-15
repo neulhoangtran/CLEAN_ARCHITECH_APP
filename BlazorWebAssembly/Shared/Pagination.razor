@@ -1,0 +1,64 @@
+﻿@typeparam TData
+@code {
+    [Parameter] public EventCallback<int> OnPageChanged { get; set; }  // Sửa tên thành OnPageChanged
+    [Parameter] public PaginationModel PaginationModel { get; set; } = new PaginationModel();
+    [Parameter] public int CurrentPage { get; set; }
+
+    @code {
+        private async Task SetPage(int pageNumber)
+        {
+            // Log giá trị pageNumber và TotalPages để kiểm tra
+            Console.WriteLine($"SetPage called with: {pageNumber}, TotalPages: {PaginationModel.TotalPages}");
+
+            // Kiểm tra giới hạn trang
+            if (pageNumber < 1 || pageNumber > PaginationModel.TotalPages)
+            {
+                Console.WriteLine($"Page number {pageNumber} is out of bounds.");
+                return;
+            }
+
+            // Cập nhật CurrentPage
+            CurrentPage = pageNumber;
+
+            // Gọi sự kiện OnPageChanged và truyền giá trị pageNumber
+            await OnPageChanged.InvokeAsync(pageNumber);
+        }
+    }
+
+    private async Task PreviousPage()
+    {
+        if (PaginationModel.HasPreviousPage)
+        {
+            CurrentPage--;
+            await OnPageChanged.InvokeAsync(CurrentPage);
+        }
+    }
+
+    private async Task NextPage()
+    {
+        if (PaginationModel.HasNextPage)
+        {
+            CurrentPage++;
+            await OnPageChanged.InvokeAsync(CurrentPage);
+        }
+    }
+}
+
+
+<nav aria-label="Page navigation">
+    <ul class="pagination">
+        <li class="page-item @(PaginationModel.HasPreviousPage ? "" : "disabled")">
+            <a class="page-link" @onclick="PreviousPage">Previous</a>
+        </li>
+        @for (var i = 1; i <= PaginationModel.TotalPages; i++)
+        {
+            var pageNumber = i;  // Tạo biến cục bộ để giữ lại giá trị của i
+            <li class="page-item @(CurrentPage == pageNumber ? "active" : "")" >
+                <a class="page-link" @onclick="@(async () => await SetPage(pageNumber))">@pageNumber</a> <!-- Sử dụng pageNumber -->
+            </li>
+        }
+        <li class="page-item @(PaginationModel.HasNextPage ? "" : "disabled")">
+            <a class="page-link" @onclick="NextPage">Next</a>
+        </li>
+    </ul>
+</nav>

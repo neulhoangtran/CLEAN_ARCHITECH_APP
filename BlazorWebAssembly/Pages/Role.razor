@@ -1,0 +1,86 @@
+﻿@page "/role"
+@inject LayoutService LayoutService
+@inject RoleService RoleService
+@implements IDisposable
+
+<div class="role-management">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Role Name</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (roles != null && roles.Count > 0)
+            {
+                @foreach (var role in roles)
+                {
+                    <tr>
+                        <td>@role.Name</td>
+                        <td>@role.Description</td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="2" class="text-center">No roles found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    @if (pagination != null && pagination.TotalPages > 1)
+    {
+        <Pagination TData="RoleModel" OnPageChanged="OnPageChanged" PaginationModel="pagination" CurrentPage="currentPage" />
+    }
+</div>
+
+@code {
+    private List<RoleModel> roles = new List<RoleModel>();
+    private PaginationModel pagination = new PaginationModel();
+    private int currentPage = 1;
+    private int pageSize = 10;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var breadcrumb = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem { Name = "Dashboard", Url = "/", IsActive = false },
+            new BreadcrumbItem { Name = "Role", Url = "/role", IsActive = true }
+        };
+        LayoutService.SetTitleAndBreadcrumb("Role", breadcrumb);
+
+        await LoadRolesAsync();
+    }
+
+    private async Task LoadRolesAsync()
+    {
+        var response = await RoleService.GetRolesAsync(currentPage, pageSize);
+
+        if (response != null)
+        {
+            roles = response.Data ?? new List<RoleModel>();
+            pagination = response.Pagination ?? new PaginationModel();
+        }
+        else
+        {
+            roles = new List<RoleModel>();
+            pagination = new PaginationModel();
+        }
+    }
+
+    private async Task OnPageChanged(int newPage)
+    {
+        currentPage = newPage;
+        await LoadRolesAsync();
+    }
+
+    public void Dispose()
+    {
+        LayoutService.OnChange -= StateHasChanged;
+    }
+}

@@ -24,12 +24,12 @@ namespace App.Api.Controllers
 
         // API lấy tất cả người dùng
         [HttpGet("list")]
-        public async Task<IActionResult> GetAllUsers(int pageIndex = 1, int pageSize = 20)
+        public async Task<IActionResult> GetAllUsers(int pageIndex = 1, int pageSize = 20, string sortBy = null, string filter = null)
         {
             try
             {
-                // Lấy danh sách phân trang từ service
-                var paginatedUsers = await _userService.GetPaginatedUsersAsync(pageIndex, pageSize);
+                // Lấy danh sách phân trang từ service với sắp xếp và lọc
+                var paginatedUsers = await _userService.GetPaginatedUsersAsync(pageIndex, pageSize, sortBy, filter);
 
                 if (paginatedUsers == null || paginatedUsers.Items.Count == 0)
                 {
@@ -53,7 +53,6 @@ namespace App.Api.Controllers
                 return BadRequest(new { Error = ex.Message });
             }
         }
-
 
         // Lấy thông tin người dùng theo Id
         [HttpGet("{id}")]

@@ -64,37 +64,47 @@ namespace BlazorWebAssembly.Services
         }
 
         // Get users function to handle fetching user data
-        public async Task<UserListResponse> GetUsersAsync(int pageIndex, int pageSize)
+        public async Task<UserListResponse> GetUsersAsync(int pageIndex, int pageSize, string sortBy = null, string filter = null)
         {
             _logger.LogInformation("Sending request to API to fetch users.");
 
             try
             {
-                // Optionally add token from localStorage to the Authorization header
                 var token = await _localStorage.GetItemAsync<string>("accessToken");
                 if (!string.IsNullOrEmpty(token))
                 {
-                    // Ensure the header is only added once and updated if token is present
                     if (_httpClient.DefaultRequestHeaders.Authorization == null || _httpClient.DefaultRequestHeaders.Authorization.Parameter != token)
                     {
                         _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
                     }
                 }
 
-                var response = await _httpClient.GetAsync($"api/user/list?pageIndex={pageIndex}&pageSize={pageSize}");
+                // Xây dựng URL để gửi yêu cầu với phân trang, sắp xếp, và lọc
+                var url = $"api/user/list?pageIndex={pageIndex}&pageSize={pageSize}";
+
+                // Nếu có tham số sắp xếp, thêm nó vào URL
+                if (!string.IsNullOrEmpty(sortBy))
+                {
+                    url += $"&sortBy={sortBy}";
+                }
+
+                // Nếu có tham số lọc, thêm nó vào URL
+                if (!string.IsNullOrEmpty(filter))
+                {
+                    url += $"&filter={filter}";
+                }
+
+                var response = await _httpClient.GetAsync(url);
                 _logger.LogInformation("Received response from API.");
 
                 if (response.StatusCode == HttpStatusCode.Unauthorized)
                 {
                     _logger.LogWarning("Received 401 Unauthorized response. Removing token from localStorage.");
-                    await RemoveTokenAsync(); // Remove token if unauthorized
-
-                    // Optionally: redirect to login page or handle unauthorized state
+                    await RemoveTokenAsync();
                     return null;
                 }
 
                 response.EnsureSuccessStatusCode();
-                _logger.LogInformation("API request succeeded.");
                 return await response.Content.ReadFromJsonAsync<UserListResponse>();
             }
             catch (HttpRequestException ex)
@@ -103,6 +113,7 @@ namespace BlazorWebAssembly.Services
                 return null;
             }
         }
+
 
         // Method to asynchronously remove the token from the localStorage
         public async Task RemoveTokenAsync()
