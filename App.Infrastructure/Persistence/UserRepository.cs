@@ -110,5 +110,13 @@ namespace App.Infrastructure.Persistence
             return new Paginate<User>(users, totalItems, pageIndex, pageSize);
         }
 
+        public async Task<List<User>> GetUsersByRoleAsync(int roleId)
+        {
+            // Sử dụng linq để lấy danh sách người dùng có roleId tương ứng
+            return await _context.Users
+                                 .Where(u => u.UserRoles.Any(ur => ur.RoleID == roleId))
+                                 .Include(u => u.UserProfile) // Gộp cả thông tin UserProfile
+                                 .ToListAsync();
+        }
     }
 }

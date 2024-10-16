@@ -114,6 +114,26 @@ namespace App.Api.Controllers
             }
         }
 
-        
+        [HttpGet("by-role/{roleId}")]
+        public async Task<IActionResult> GetUsersByRole(int roleId)
+        {
+            try
+            {
+                // Gọi service để lấy danh sách người dùng theo roleId
+                var users = await _userService.GetUsersByRoleAsync(roleId);
+
+                if (users == null || users.Count == 0)
+                {
+                    return NotFound(new { Message = "No users found for this role." });
+                }
+
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Error = ex.Message });
+            }
+        }
+
     }
 }

@@ -70,15 +70,6 @@ namespace BlazorWebAssembly.Services
 
             try
             {
-                var token = await _localStorage.GetItemAsync<string>("accessToken");
-                if (!string.IsNullOrEmpty(token))
-                {
-                    if (_httpClient.DefaultRequestHeaders.Authorization == null || _httpClient.DefaultRequestHeaders.Authorization.Parameter != token)
-                    {
-                        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    }
-                }
-
                 // Xây dựng URL để gửi yêu cầu với phân trang, sắp xếp, và lọc
                 var url = $"api/user/list?pageIndex={pageIndex}&pageSize={pageSize}";
 
@@ -123,6 +114,45 @@ namespace BlazorWebAssembly.Services
             // Remove the token from localStorage
             await _localStorage.RemoveItemAsync("accessToken");
             _logger.LogInformation("Access token removed successfully.");
+        }
+
+        public async Task<List<UserModel>> GetUsersByRoleAsync(int roleId)
+        {
+            try
+            {
+                // Gửi yêu cầu API để lấy danh sách người dùng theo roleId
+                var response = await _httpClient.GetAsync($"/api/user/by-role/{roleId}");
+
+                // Kiểm tra trạng thái phản hồi từ API
+                response.EnsureSuccessStatusCode();
+
+                // Trả về danh sách người dùng nếu thành công
+                return await response.Content.ReadFromJsonAsync<List<UserModel>>();
+            }
+            catch (HttpRequestException ex)
+            {
+                // Ghi lại lỗi nếu có vấn đề khi gọi API
+                Console.WriteLine($"Error fetching users for role {roleId}: {ex.Message}");
+
+                // Trả về danh sách rỗng nếu có lỗi xảy ra
+                return new List<UserModel>();
+            }
+            catch (Exception ex)
+            {
+                // Xử lý các ngoại lệ khác nếu cần thiết
+                Console.WriteLine($"Unexpected error: {ex.Message}");
+
+                // Trả về danh sách rỗng nếu có lỗi xảy ra
+                return new List<UserModel>();
+            }
+        }
+
+        // Lấy tất cả người dùng, có thể tìm kiếm bằng username
+        public async Task<UserListResponse> GetAllUsersAsync(string usernameFilter = null)
+        {
+            var response = await _httpClient.GetAsync($"/api/user/list?filter={usernameFilter}&pageIndex=1&pageSize=10");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<UserListResponse>();
         }
     }
 }

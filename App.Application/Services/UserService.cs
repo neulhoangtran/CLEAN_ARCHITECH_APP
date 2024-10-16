@@ -137,5 +137,19 @@ namespace App.Application.Services
             }
         }
 
+        public async Task<List<UserDto>> GetUsersByRoleAsync(int roleId)
+        {
+            // Gọi repository để lấy danh sách người dùng theo roleId
+            var users = await _userRepository.GetUsersByRoleAsync(roleId);
+
+            // Chuyển đổi từ entity sang DTO
+            return users.Select(user => new UserDto
+            {
+                ID = user.ID,
+                Username = user.Username,
+                Email = user.Email,
+                FullName = user.UserProfile?.FullName
+            }).ToList();
+        }
     }
 }

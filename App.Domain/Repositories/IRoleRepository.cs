@@ -8,6 +8,8 @@ namespace App.Domain.Repositories
         // Lấy tất cả các vai trò
         IEnumerable<Role> GetAll();
 
+        Task<Paginate<Role>> GetPaginatedRolesAsync(int pageIndex, int pageSize);
+
         // Lấy thông tin vai trò theo ID
         Task<Role> GetByIdAsync(int id);
 

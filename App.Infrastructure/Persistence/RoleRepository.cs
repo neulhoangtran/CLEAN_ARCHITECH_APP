@@ -1,4 +1,5 @@
-﻿using App.Domain.Entities;
+﻿using App.Domain;
+using App.Domain.Entities;
 using App.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,19 @@ namespace App.Infrastructure.Persistence
             return _context.Roles;
         }
 
+        // Triển khai phương thức phân trang role
+        public async Task<Paginate<Role>> GetPaginatedRolesAsync(int pageIndex, int pageSize)
+        {
+            var totalItems = await _context.Roles.CountAsync();
+            var roles = await _context.Roles
+                .OrderBy(r => r.ID) // Sắp xếp theo tên hoặc tiêu chí khác
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return new Paginate<Role>(roles, totalItems, pageIndex, pageSize);
+
+        }
         public async Task<Role> GetByIdAsync(int id)
         {
             return await _context.Roles.FindAsync(id);

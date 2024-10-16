@@ -27,16 +27,6 @@ namespace BlazorWebAssembly.Services
 
             try
             {
-                // Optionally add token from localStorage to the Authorization header
-                var token = await _localStorage.GetItemAsync<string>("accessToken");
-                if (!string.IsNullOrEmpty(token))
-                {
-                    // Ensure the header is only added once and updated if token is present
-                    if (_httpClient.DefaultRequestHeaders.Authorization == null || _httpClient.DefaultRequestHeaders.Authorization.Parameter != token)
-                    {
-                        _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-                    }
-                }
 
                 // Construct the URL for pagination, sorting, and filtering
                 var url = $"api/role/list?pageIndex={pageIndex}&pageSize={pageSize}";
@@ -81,6 +71,29 @@ namespace BlazorWebAssembly.Services
             // Remove the token from localStorage
             await _localStorage.RemoveItemAsync("accessToken");
             _logger.LogInformation("Access token removed successfully.");
+        }
+
+
+        // Phương thức lấy thông tin role theo ID
+        public async Task<RoleModel> GetRoleByIdAsync(int id)
+        {
+            var response = await _httpClient.GetAsync($"/api/role/{id}");
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadFromJsonAsync<RoleModel>();
+        }
+
+        // Phương thức cập nhật role
+        public async Task UpdateRoleAsync(int id, RoleModel role)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"/api/role/{id}", role);
+            response.EnsureSuccessStatusCode();
+        }
+
+        // Thêm người dùng vào role
+        public async Task AddUserToRoleAsync(int roleId, int userId)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"/api/role/{roleId}/add-user", new { UserId = userId });
+            response.EnsureSuccessStatusCode();
         }
     }
 }

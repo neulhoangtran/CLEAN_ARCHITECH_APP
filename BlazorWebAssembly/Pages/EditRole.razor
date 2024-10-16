@@ -1,0 +1,214 @@
+﻿@page "/role/{id:int}"
+@inject RoleService RoleService
+@inject UserService UserService
+@inject LayoutService LayoutService
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
+
+<div class="row role-edit-header">
+    <div class="col col-4 d-flex align-items-center justify-content-center flex-column">
+        <h3>@role.Name</h3>
+        <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+    </div>
+    <div class="col cols-4 border border-primary border-top-0 border-bottom-0 d-flex align-items-center role-total-user justify-content-center">
+        <div class="d-flex align-items-center gap-4 justify-content-center">
+            <i class="fa-regular fa-user-group"></i>
+            <div>
+                <span>@users.Count</span>
+                <p>Users</p>
+            </div>
+        </div>
+    </div>
+    <div class="col cols-4 d-flex align-items-center role-edit-actions justify-content-center gap-2 flex-column">
+        <button type="button" class="btn btn-primary" @onclick="OpenAddUserPopup"><i class="fa-regular fa-plus"></i> Add User</button>
+        <button type="button" class="btn btn-secondary"><i class="fa-regular fa-pen-to-square"></i> Edit Permission</button>
+        <button type="button" class="btn btn-dark"><i class="fa-regular fa-trash-can-clock"></i> Delete Role</button>
+    </div>
+</div>
+
+<!-- User Grid -->
+<div class="row role-edit">
+    <div class="col-6">
+        <h4>User in Role</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Full Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (users != null && users.Count > 0)
+                {
+                    @foreach (var user in users)
+                    {
+                        <tr>
+                            <td>@user.Id</td>
+                            <td>@user.Username</td>
+                            <td>@user.Email</td>
+                            <td>@user.FullName</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center">No users found for this role.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-6">
+        <h4>Permission</h4>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Full Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (users != null && users.Count > 0)
+                {
+                    @foreach (var user in users)
+                    {
+                        <tr>
+                            <td>@user.Id</td>
+                            <td>@user.Username</td>
+                            <td>@user.Email</td>
+                            <td>@user.FullName</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="text-center">No users found for this role.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Popup for adding users -->
+@if (showAddUserPopup)
+{
+    <div class="modal show d-block" tabindex="-1" style="background-color: rgba(0,0,0,0.5);">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add User to Role</h5>
+                    <button type="button" class="btn-close" @onclick="CloseAddUserPopup"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" class="form-control mb-3" placeholder="Search by username" @bind="searchUsername" @oninput="SearchUsersAsync" />
+
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Username</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (availableUsers != null && availableUsers.Count > 0)
+                            {
+                                @foreach (var user in availableUsers)
+                                {
+                                    <tr>
+                                        <td>@user.Id</td>
+                                        <td>@user.Username</td>
+                                        <td>
+                                            <button class="btn btn-primary btn-sm" @onclick="() => AddUserToRole(user.Id)">Add</button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="3" class="text-center">No available users found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" @onclick="CloseAddUserPopup">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private RoleModel role = new RoleModel();
+    private List<UserModel> users = new List<UserModel>();
+    private List<UserModel> availableUsers = new List<UserModel>();  // Danh sách người dùng chưa có trong role
+    private bool showAddUserPopup = false;
+    private string searchUsername = string.Empty;
+    private PaginationModel pagination = new PaginationModel();
+    private int currentPage = 1;
+    private int pageSize = 2;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var breadcrumb = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem { Name = "Dashboard", Url = "/", IsActive = false },
+            new BreadcrumbItem { Name = "Role", Url = "/role", IsActive = false },
+            new BreadcrumbItem { Name = "Edit Role", Url = $"/role/{Id}", IsActive = true }
+        };
+        LayoutService.SetTitleAndBreadcrumb("Edit Role", breadcrumb);
+
+        role = await RoleService.GetRoleByIdAsync(Id);
+        users = await UserService.GetUsersByRoleAsync(Id);
+    }
+
+    private async Task OpenAddUserPopup()
+    {
+        showAddUserPopup = true;
+        await SearchUsersAsync();
+    }
+
+    private void CloseAddUserPopup()
+    {
+        showAddUserPopup = false;
+    }
+
+    // Hàm tìm kiếm user theo username, và loại bỏ các user đã có trong role
+    private async Task SearchUsersAsync()
+    {
+        // Sử dụng bộ lọc tìm kiếm là `searchUsername`
+        var response = await UserService.GetAllUsersAsync(searchUsername);
+
+        if (response != null)
+        {
+            availableUsers = response.Data ?? new List<UserModel>(); // Nếu response.Data null, khởi tạo danh sách rỗng
+            pagination = response.Pagination ?? new PaginationModel(); // Nếu response.Pagination null, khởi tạo đối tượng mặc định
+        }
+        else
+        {
+            availableUsers = new List<UserModel>();
+            pagination = new PaginationModel();
+        }
+    }
+
+    // Hàm thêm user vào role
+    private async Task AddUserToRole(int userId)
+    {
+        await RoleService.AddUserToRoleAsync(Id, userId);  // Hàm này sẽ thêm user vào role
+        users = await UserService.GetUsersByRoleAsync(Id);  // Cập nhật lại danh sách user trong role
+        CloseAddUserPopup();  // Đóng popup sau khi thêm
+    }
+}

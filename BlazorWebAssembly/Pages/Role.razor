@@ -2,6 +2,8 @@
 @inject LayoutService LayoutService
 @inject RoleService RoleService
 @implements IDisposable
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
 
 <div class="role-management">
 
@@ -9,7 +11,7 @@
         <thead>
             <tr>
                 <th>Role Name</th>
-                <th>Description</th>
+                <th style="text-align: right;">Action</th>
             </tr>
         </thead>
         <tbody>
@@ -19,7 +21,15 @@
                 {
                     <tr>
                         <td>@role.Name</td>
-                        <td>@role.Description</td>
+                        <td style="text-align: right;">
+                            <button class="btn btn-outline-secondary me-2" style="font-size: 13px;" @onclick="() => DeleteRole(role.Id)">
+                                <i class="fa fa-trash" ></i> Delete
+                            </button>
+
+                            <button class="btn btn-outline-primary btn-sm" style="font-size: 13px; min-height: 33px" @onclick="() => EditRole(role.Id)">
+                                <i class="fa fa-edit "></i> Edit
+                            </button>
+                        </td>
                     </tr>
                 }
             }
@@ -70,6 +80,26 @@
         {
             roles = new List<RoleModel>();
             pagination = new PaginationModel();
+        }
+    }
+
+    // Xử lý sự kiện chỉnh sửa role
+    private void EditRole(int roleId)
+    {
+        // Điều hướng hoặc thực hiện logic chỉnh sửa tại đây
+        NavigationManager.NavigateTo($"/role/{roleId}");
+    }
+
+    // Xử lý sự kiện xóa role
+    private async Task DeleteRole(int roleId)
+    {
+        bool confirmDelete = await JSRuntime.InvokeAsync<bool>("confirm", new object[] { $"Are you sure you want to delete this role?" });
+        if (confirmDelete)
+        {
+            // Thực hiện xóa role tại đây
+            Console.WriteLine($"Delete role with ID: {roleId}");
+            // Sau khi xóa, tải lại danh sách role
+            await LoadRolesAsync();
         }
     }
 

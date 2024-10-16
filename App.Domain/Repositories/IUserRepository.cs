@@ -14,5 +14,6 @@ namespace App.Domain.Repositories
         Task SaveChangesAsync();
         IEnumerable<User> GetAll();
         Task<Paginate<User>> GetPaginatedUsersAsync(int pageIndex, int pageSize, string sortBy = null, string filter = null);
+        Task<List<User>> GetUsersByRoleAsync(int roleId);
     }
 }

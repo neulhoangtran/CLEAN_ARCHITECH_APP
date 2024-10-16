@@ -34,6 +34,21 @@ builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationStateServi
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5223/") });
 
 
+
+builder.Services.AddScoped<BearerTokenHandler>();
+
+builder.Services.AddHttpClient<RoleService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5223/"); // Replace with your API base URL
+})
+.AddHttpMessageHandler<BearerTokenHandler>();
+
+builder.Services.AddHttpClient<UserService>(client =>
+{
+    client.BaseAddress = new Uri("http://localhost:5223/"); // Replace with your API base URL
+})
+.AddHttpMessageHandler<BearerTokenHandler>();
+
 // Cấu hình HttpClient sử dụng URL từ appsettings.json
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiUrl) });
 

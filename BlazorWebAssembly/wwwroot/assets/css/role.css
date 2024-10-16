@@ -1,0 +1,26 @@
+﻿.role-total-user i {
+    font-size: 50px;
+}
+
+.role-total-user span {
+    font-size: 32px;
+    text-align: center;
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.role-total-user p {
+    font-size: 24px;
+    text-align: center;
+    display: block;
+    margin-bottom: 0;
+}
+
+.role-edit-actions .btn {
+    width: 100%;
+}
+
+.role-edit {
+    margin-top: 50px;
+}
