@@ -214,6 +214,39 @@ namespace App.Infrastructure.Persistence
             modelBuilder.Entity<Role>().HasData(employeeRole);
             modelBuilder.Entity<User>().HasData(adminUser);
             modelBuilder.Entity<UserRole>().HasData(userRole);
+
+
+            // Seed permissions for User group
+            modelBuilder.Entity<Permission>().HasData(
+                new Permission { ID = 1, PermissionName = "User_View", Description = "Xem danh sách người dùng", Group = "User", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Permission { ID = 2, PermissionName = "User_Add", Description = "Thêm người dùng", Group = "User", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Permission { ID = 3, PermissionName = "User_Edit", Description = "Sửa thông tin người dùng", Group = "User", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Permission { ID = 4, PermissionName = "User_Delete", Description = "Xóa người dùng", Group = "User", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Permission { ID = 5, PermissionName = "Role_Manage", Description = "Quản lý quyền người dùng", Group = "User", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+            );
+
+            // Seed permissions for Checklist group
+            modelBuilder.Entity<Permission>().HasData(
+                new Permission { ID = 6, PermissionName = "Checklist_View", Description = "Xem danh sách checklist", Group = "Checklist", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Permission { ID = 7, PermissionName = "Checklist_Create", Description = "Tạo checklist mới", Group = "Checklist", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Permission { ID = 8, PermissionName = "Checklist_AssignShift", Description = "Gán nhân viên theo ca", Group = "Checklist", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Permission { ID = 9, PermissionName = "Checklist_ConfirmShift", Description = "Xác nhận ca làm việc", Group = "Checklist", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+            );
+
+            // Seed permissions for Report group
+            modelBuilder.Entity<Permission>().HasData(
+                new Permission { ID = 10, PermissionName = "Report_View", Description = "Xem báo cáo", Group = "Report", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+            );
+
+            // Seed permissions for DailyLog group
+            modelBuilder.Entity<Permission>().HasData(
+                new Permission { ID = 11, PermissionName = "DailyLog_View", Description = "Xem nhật ký hàng ngày", Group = "DailyLog", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+            );
+
+            // Seed permissions for Settings group
+            modelBuilder.Entity<Permission>().HasData(
+                new Permission { ID = 12, PermissionName = "Settings_Modify", Description = "Sửa đổi cài đặt hệ thống", Group = "Settings", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+            );
         }
 
         // Hàm băm mật khẩu (có thể dùng các thuật toán băm như SHA-256)
