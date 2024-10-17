@@ -286,3 +286,8 @@
     position: absolute;
     bottom: -650px;
 }
+
+p {
+    margin: 0;
+    padding: 5px 0 5px 10px;
+}
