@@ -27,25 +27,25 @@ builder.Services.AddAuthorizationCore();
 
 // Đăng ký AuthenticationStateProvider (đây là dịch vụ quan trọng cho xác thực)
 builder.Services.AddScoped<AuthenticationStateProvider, AuthenticationStateService>();
+builder.Services.AddScoped<AuthenticationStateService>();
 
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 // Đọc cấu hình từ appsettings.json
 //var apiUrl = builder.Configuration.GetValue<string>("ApiSettings:API_URL");
-builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7277/") });
-
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("http://localhost:5223/") });
 
 
 builder.Services.AddScoped<BearerTokenHandler>();
 
 builder.Services.AddHttpClient<RoleService>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7277/"); // Replace with your API base URL
+    client.BaseAddress = new Uri("http://localhost:5223/"); // Replace with your API base URL
 })
 .AddHttpMessageHandler<BearerTokenHandler>();
 
 builder.Services.AddHttpClient<UserService>(client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7277/"); // Replace with your API base URL
+    client.BaseAddress = new Uri("http://localhost:5223/"); // Replace with your API base URL
 })
 .AddHttpMessageHandler<BearerTokenHandler>();
 
