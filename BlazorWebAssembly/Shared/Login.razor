@@ -99,14 +99,14 @@
                 Logger.LogInformation("Login thành công, lưu token vào LocalStorage.");
 
                 // Lưu token vào LocalStorage
-                await LocalStorageService.SetItemAsync("accessToken", loginResponse.Token.AccessToken.Trim().Trim('"'));
+                // await LocalStorageService.SetItemAsync("accessToken", loginResponse.Token.AccessToken.Trim().Trim('"'));
 
                 // Gọi AuthenticationStateService để cập nhật trạng thái xác thực
                 var authStateService = (AuthenticationStateService)AuthenticationStateProvider;
                 authStateService.MarkUserAsAuthenticated(loginResponse.Token.AccessToken);
 
                 // Điều hướng về trang chủ sau khi đăng nhập thành công
-                NavigationManager.NavigateTo("/");
+                // NavigationManager.NavigateTo("/");
             }
             else
             {

@@ -26,6 +26,6 @@ namespace App.Domain.Repositories
         void Delete(Role role);
 
         // Lưu thay đổi vào cơ sở dữ liệu
-        Task SaveChangesAsync();
+        Task SaveChangesAsync();    
     }
 }

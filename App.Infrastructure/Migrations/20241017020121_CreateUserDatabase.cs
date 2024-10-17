@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace App.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreateDatabase : Migration
+    public partial class CreateUserDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,6 +21,7 @@ namespace App.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     PermissionName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Group = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
                 },
@@ -161,18 +162,38 @@ namespace App.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Permissions",
+                columns: new[] { "ID", "CreatedAt", "Description", "Group", "PermissionName", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8691), "View user list", "User", "User_View", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8691) },
+                    { 2, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8693), "Add new user", "User", "User_Add", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8694) },
+                    { 3, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8695), "Edit user information", "User", "User_Edit", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8696) },
+                    { 4, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8698), "Delete user", "User", "User_Delete", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8698) },
+                    { 5, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8713), "Add new role", "Role", "Role_Add", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8713) },
+                    { 6, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8715), "Edit role", "Role", "Role_Edit", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8715) },
+                    { 7, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8717), "Delete role", "Role", "Role_Delete", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8717) },
+                    { 8, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8730), "View checklist list", "Checklist", "Checklist_View", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8731) },
+                    { 9, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8732), "Assign employees to shifts", "Checklist", "Checklist_AssignShift", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8733) },
+                    { 10, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8734), "Confirm shifts", "Checklist", "Checklist_ConfirmShift", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8735) },
+                    { 11, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8746), "View reports", "Report", "Report_View", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8747) },
+                    { 12, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8757), "View daily logs", "DailyLog", "DailyLog_View", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8757) },
+                    { 13, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8767), "Modify system settings", "Settings", "Settings_Modify", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8768) }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Roles",
                 columns: new[] { "ID", "CreatedAt", "RoleName", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 10, 10, 5, 45, 44, 435, DateTimeKind.Utc).AddTicks(1172), "Administrator", new DateTime(2024, 10, 10, 5, 45, 44, 435, DateTimeKind.Utc).AddTicks(1175) },
-                    { 2, new DateTime(2024, 10, 10, 5, 45, 44, 435, DateTimeKind.Utc).AddTicks(1177), "Employee", new DateTime(2024, 10, 10, 5, 45, 44, 435, DateTimeKind.Utc).AddTicks(1177) }
+                    { 1, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8592), "Administrator", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8595) },
+                    { 2, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8597), "Employee", new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8598) }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "ID", "CreatedAt", "Email", "EmployeeId", "PasswordHash", "Status", "UpdatedAt", "Username" },
-                values: new object[] { 1, new DateTime(2024, 10, 10, 5, 45, 44, 435, DateTimeKind.Utc).AddTicks(1179), "admin@example.com", "ADMIN001", "3b612c75a7b5048a435fb6ec81e52ff92d6d795a8b5a9c17070f6a63c97a53b2", 1, new DateTime(2024, 10, 10, 5, 45, 44, 435, DateTimeKind.Utc).AddTicks(1179), "admin" });
+                values: new object[] { 1, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8600), "admin@example.com", "ADMIN001", "3b612c75a7b5048a435fb6ec81e52ff92d6d795a8b5a9c17070f6a63c97a53b2", 1, new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8600), "admin" });
 
             migrationBuilder.InsertData(
                 table: "Role_User",

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Blazored.LocalStorage;
@@ -11,12 +12,14 @@ namespace BlazorWebAssembly.DI
         private readonly ILocalStorageService _localStorageService;
         private readonly AuthenticationState _anonymous;
         private readonly ILogger<AuthenticationStateService> _logger;
+        private readonly NavigationManager _navigationManager;
         private const string TokenKey = "authToken";
 
-        public AuthenticationStateService(ILocalStorageService localStorageService, ILogger<AuthenticationStateService> logger)
+        public AuthenticationStateService(ILocalStorageService localStorageService, ILogger<AuthenticationStateService> logger, NavigationManager navigationManager)
         {
             _localStorageService = localStorageService;
             _logger = logger;
+            _navigationManager = navigationManager; // Gán giá trị
             _anonymous = new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity()));
         }
 
@@ -25,7 +28,7 @@ namespace BlazorWebAssembly.DI
             _logger.LogInformation("Attempting to retrieve authentication state.");
 
             //var token = await _localStorageService.GetItemAsStringAsync("accessToken");
-            var token = (await _localStorageService.GetItemAsStringAsync("accessToken"))?.Trim().Trim('"');
+            var token = (await _localStorageService.GetItemAsStringAsync(TokenKey))?.Trim().Trim('"');
 
             _logger.LogInformation(token);
             if (string.IsNullOrWhiteSpace(token))
@@ -52,21 +55,22 @@ namespace BlazorWebAssembly.DI
             }
         }
 
-        public void MarkUserAsAuthenticated(string token)
+        public async Task MarkUserAsAuthenticated(string token)
         {
             _logger.LogInformation("Marking user as authenticated.");
-            _localStorageService.SetItemAsync(TokenKey, token);
+            await _localStorageService.SetItemAsync(TokenKey, token);
             var claims = JwtParser.ParseClaimsFromJwt(token);
             var authenticatedUser = new ClaimsPrincipal(new ClaimsIdentity(claims, "jwtAuthType"));
             NotifyAuthenticationStateChanged(Task.FromResult(new AuthenticationState(authenticatedUser)));
             _logger.LogInformation("User authenticated and state updated.");
         }
 
-        public void MarkUserAsLoggedOut()
+        public async Task MarkUserAsLoggedOut()
         {
             _logger.LogInformation("Logging out user.");
-            _localStorageService.RemoveItemAsync(TokenKey);
+            await _localStorageService.RemoveItemAsync(TokenKey);
             NotifyAuthenticationStateChanged(Task.FromResult(_anonymous));
+            _navigationManager.NavigateTo(_navigationManager.Uri, forceLoad: true);
             _logger.LogInformation("User logged out and state updated.");
         }
     }

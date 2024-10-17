@@ -1,4 +1,7 @@
-﻿
+﻿.shadow {
+    box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.175) !important;
+}
+
 .login-component .login-box {
     margin-top: 75px;
     height: auto;
