@@ -1,6 +1,7 @@
 ﻿.formal-form {
     border: 2px solid rgb(0, 0, 0);
-    margin: 60px 0;
+    float: left;
+    margin: auto;
 }
 
     .formal-form p {
@@ -16,13 +17,16 @@
     .fisrtData b {
         float: left;
         font-weight: bold;
-        padding: 20px 70px;
+        padding: 27px 16px;
+        font-size: 19px;
     }
 
 .table-view-1 {
+    float: right;
 }
 
 .table-view-2 {
+    float: right;
 }
 
 .table-view-1 th:first-child {
@@ -32,7 +36,7 @@
 .table-view-1 th {
     border-right: 1px solid rgb(0, 0, 0);
     border-bottom: 1px solid rgb(0, 0, 0);
-    padding: 0 25px;
+    padding: 8px 30.3px;
 }
 
     .table-view-1 th:last-child {
@@ -50,7 +54,7 @@
 .table-view-2 td {
     border-right: 1px solid rgb(0, 0, 0);
     border-bottom: 1px solid rgb(0, 0, 0);
-    padding: 10px 45.5px;
+    padding: 10px 51.1px;
 }
 
     .table-view-2 td:last-child {
@@ -81,7 +85,17 @@
     text-align: left;
 }
 
+.NextData3 {
+    float: left;
+    width: 100%;
+}
+
+.NextData3 table {
+    width: 50%;
+}
+
 .NextData3 p {
+    padding: 5px;
     width: 50%;
     border-top: 1px solid rgb(0, 0, 0);
     border-bottom: 1px solid rgb(0, 0, 0);
@@ -93,18 +107,22 @@
 }
 
 .NextData3 td {
-    padding: 0 14.966px;
     border: 1px solid rgb(0, 0, 0);
     border-right: 0px;
+    padding: 5px 0;
+    text-align: center;
+    width: 16.666667%;
 }
 
 .NextData4 {
     width: 100%;
     float: left;
     border-bottom: 1px solid rgb(0, 0, 0);
+    
 }
 
     .NextData4 .dup-col {
+        
         width: 50%;
         float: left;
         border-right: 1px solid rgb(0, 0, 0);
@@ -115,6 +133,7 @@
         }
 
         .NextData4 .dup-col p {
+            padding-left: 10px;
             width: 50%;
             border-right: 1px solid rgb(0, 0, 0);
         }
@@ -129,43 +148,49 @@
 }
 
     .NextData5 .dup-col th {
-        width: calc(25% - 1px);
+        width: calc(25% - 0.5px);
         float: left;
+        padding: 0px 5px
     }
 
         .NextData5 .dup-col th:first-child {
-            height: 297px;
+            height:307px;
             border-right: 1px solid rgb(0, 0, 0);
             padding-top: 140px;
         }
 
         .NextData5 .dup-col th:nth-child(2) {
-            height: 54px;
+            height: 55.8px;
             padding-top: 13px;
             border-bottom: 1px solid rgb(0, 0, 0);
+            border-right: 1px solid rgb(0, 0, 0);
         }
 
         .NextData5 .dup-col th:nth-child(5) {
-            height: 240px;
+            height: 251px;
             padding-top: 108px;
+            border-right: 1px solid rgb(0, 0, 0);
         }
 
-    .NextData5 .dup-col .tab-warning td {
-        width: auto;
-        padding: 1px 29.28px;
-        border-left: 0px;
-    }
+.tab-warning {
+    border-bottom: 1px solid rgb(0, 0, 0);
+    padding: 5px;
+}
+
+.NextData5 .dup-col .tab-warning td {
+    width: auto;
+    padding: 5px 29.8px;
+}
 
         .NextData5 .dup-col .tab-warning td:last-child {
             border-right: 0px;
         }
 
     .NextData5 .dup-col td {
-        width: calc(50% + 2px);
+        width: calc(50% + 0.5px);
         float: left;
         border-right: 1px solid rgb(0, 0, 0);
-        border-bottom: 1px solid rgb(0, 0, 0);
-        border-left: 1px solid rgb(0, 0, 0);
+        padding: 5px;
     }
 
 .NextData6 {
@@ -181,12 +206,12 @@
 }
 
     .NextData7 .dup-col th {
-        width: calc(25% - 1px);
+        width: calc(25%);
         float: left;
     }
 
         .NextData7 .dup-col th:first-child {
-            height: 351px;
+            height: 362px;
             border-right: 1px solid rgb(0, 0, 0);
             padding-top: 164px;
         }
@@ -196,7 +221,7 @@
         }
 
         .NextData7 .dup-col th:nth-child(4) {
-            height: 216px;
+            height: 223px;
             padding-top: 96px;
             border-bottom: 1px solid rgb(0, 0, 0);
         }
@@ -208,7 +233,7 @@
 
     .NextData7 .dup-col .tab-warning td {
         width: auto;
-        padding: 1px 29.28px;
+        padding: 5px 29.28px;
         border-left: 0px;
     }
 
@@ -217,10 +242,9 @@
         }
 
     .NextData7 .dup-col td {
-        width: calc(50% + 2px);
+        width: calc(50%);
         float: left;
         border-right: 1px solid rgb(0, 0, 0);
-        border-bottom: 1px solid rgb(0, 0, 0);
         border-left: 1px solid rgb(0, 0, 0);
     }
 
@@ -228,7 +252,7 @@
     width: 50%;
     border-top: 1px solid rgb(0, 0, 0);
     border-right: 1px solid rgb(0, 0, 0);
-    padding: 1.3px;
+    padding: 5px 1.3px;
 }
 
 .NextData8 td:first-child {
@@ -239,6 +263,7 @@
     padding: 1px 17px;
     border: 1px solid rgb(0, 0, 0);
     border-right: 0px;
+    height:26px;
 }
 
 .NextData9 {

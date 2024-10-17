@@ -36,3 +36,8 @@ div#layoutSidenav_content main {
 h1 {
     font-size: 28px;
 }
+
+p {
+    margin: 0;
+    padding: 5px 0 5px 10px;
+}
