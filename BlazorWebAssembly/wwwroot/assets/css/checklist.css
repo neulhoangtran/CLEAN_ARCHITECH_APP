@@ -205,6 +205,9 @@
     float: left;
 }
 
+    .NextData7 .dup-col table {
+    }
+
     .NextData7 .dup-col th {
         width: calc(25%);
         float: left;
@@ -232,9 +235,9 @@
         }
 
     .NextData7 .dup-col .tab-warning td {
-        width: auto;
         padding: 5px 29.28px;
         border-left: 0px;
+        width:16.666667%;
     }
 
         .NextData7 .dup-col .tab-warning td:last-child {
@@ -263,7 +266,12 @@
     padding: 1px 17px;
     border: 1px solid rgb(0, 0, 0);
     border-right: 0px;
-    height:26px;
+    height:27px;
+    width: 16.6666667%;
+}
+
+.NextData8 table{
+    width: 50%;
 }
 
 .NextData9 {
