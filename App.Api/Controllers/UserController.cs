@@ -33,7 +33,19 @@ namespace App.Api.Controllers
 
                 if (paginatedUsers == null || paginatedUsers.Items.Count == 0)
                 {
-                    return NotFound(new { Message = "No users found" });
+                    // Trả về HTTP 200 với thông báo "No users found"
+                    return Ok(new
+                    {
+                        Data = Array.Empty<object>(), // Trả về mảng rỗng cho "Data"
+                        Message = "No users found",
+                        Pagination = new
+                        {
+                            PageIndex = pageIndex,
+                            TotalPages = 0,
+                            HasPreviousPage = false,
+                            HasNextPage = false
+                        }
+                    });
                 }
 
                 return Ok(new

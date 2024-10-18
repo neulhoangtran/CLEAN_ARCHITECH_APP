@@ -1,10 +1,26 @@
 ﻿@page "/profile"
+@inject LayoutService LayoutService
 
+@code {
+    private List<RoleModel> roles = new List<RoleModel>();
+    private PaginationModel pagination = new PaginationModel();
+    private int currentPage = 1;
+    private int pageSize = 10;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var breadcrumb = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem { Name = "Dashboard", Url = "/", IsActive = false },
+            new BreadcrumbItem { Name = "Profile", Url = "/profile", IsActive = true }
+        };
+        LayoutService.SetTitleAndBreadcrumb("Edit Profile", breadcrumb);
+    }
+}
 <div class="page-profile">
 	<div class="row gutters">
 		<div class="col-xl-3 col-lg-3 col-md-12 col-sm-12 col-12">
-			<div class="card h-100">
+			<div class="card h-100 shadow">
 				<div class="card-body">
 					<div class="account-settings">
 						<div class="user-profile">

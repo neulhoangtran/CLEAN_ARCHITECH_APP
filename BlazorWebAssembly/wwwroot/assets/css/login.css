@@ -2,6 +2,9 @@
     box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.175) !important;
 }
 
+.toolbar .form-control:focus, .toolbar .datatable-input:focus {
+    box-shadow: none
+}
 .login-component .login-box {
     margin-top: 75px;
     height: auto;
@@ -105,13 +108,11 @@
     right: 0px;
 }
 
-.login-component .login-btm {
-    float: left;
-}
 
 .login-component .login-button {
+    width: 100%;
     padding-right: 0px;
-    text-align: right;
+    text-align: center;
     margin-bottom: 25px;
 }
 
@@ -129,3 +130,21 @@
     height: 100%;
     background: #222D32;
 }
+
+.toolbar select.form-select {
+    font-size: 14px;
+}
+
+.toolbar label {
+    font-weight: 700;
+}
+
+.toolbar .input-group-search .btn {
+    margin-left: 0 !important;
+    position: relative;
+    left: -35px;
+    z-index: 5;
+}
+    
+    
+    

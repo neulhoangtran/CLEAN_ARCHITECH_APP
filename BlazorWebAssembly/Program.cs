@@ -6,6 +6,7 @@ using Blazored.LocalStorage;
 using BlazorWebAssembly.DI;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Configuration;
+using Blazored.Modal;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -48,6 +49,9 @@ builder.Services.AddHttpClient<UserService>(client =>
     client.BaseAddress = new Uri("http://localhost:5223/"); // Replace with your API base URL
 })
 .AddHttpMessageHandler<BearerTokenHandler>();
+
+// thêm blazor modal
+builder.Services.AddBlazoredModal();
 
 // Cấu hình HttpClient sử dụng URL từ appsettings.json
 //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(apiUrl) });
