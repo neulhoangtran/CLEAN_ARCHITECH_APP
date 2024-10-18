@@ -1,20 +1,20 @@
 ﻿@inject Blazored.Modal.Services.IModalService ModalService
 @using Blazored.Modal
+@using System.ComponentModel.DataAnnotations
 @code {
     private UserModel newUser = new UserModel();
 
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
     private async Task Save()
     {
         // Đóng modal và trả về kết quả với dữ liệu user mới
-        // await ModalReference.CloseAsync(ModalResult.Ok(newUser));
         await BlazoredModal.CloseAsync(ModalResult.Ok(newUser));
     }
 
     private async Task Cancel()
     {
-        // Đóng modal mà không có kết quả (hủy bỏ modal)
-        // await ModalReference.CloseAsync(ModalResult.Cancel());
+        // Đóng modal mà không có kết quả
         await BlazoredModal.CancelAsync();
     }
 }
@@ -22,22 +22,81 @@
 <EditForm Model="newUser" OnValidSubmit="Save">
     <DataAnnotationsValidator />
     <ValidationSummary />
-    <div class="form-group">
-        <label>Username</label>
-        <InputText @bind-Value="newUser.Username" class="form-control" />
+
+    <!-- Row 1: Username and Employee ID -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label>Username*</label>
+            <InputText @bind-Value="newUser.Username" class="form-control" />
+        </div>
+        <div class="col-md-6">
+            <label>Employee ID*</label>
+            <InputText @bind-Value="newUser.EmployeeId" class="form-control" />
+        </div>
     </div>
-    <div class="form-group">
-        <label>Email</label>
-        <InputText @bind-Value="newUser.Email" class="form-control" />
+
+    <!-- Row 2: Email and Role -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label>Email*</label>
+            <InputText @bind-Value="newUser.Email" class="form-control" type="email" />
+        </div>
+        <div class="col-md-6">
+            <label>Role*</label>
+            <InputSelect @bind-Value="newUser.Role" class="form-control">
+                <option value="">Select Role</option>
+                <option value="Admin">Admin</option>
+                <option value="User">User</option>
+                <option value="Manager">Manager</option>
+            </InputSelect>
+        </div>
     </div>
-    <div class="form-group">
-        <label>Full Name</label>
-        <InputText @bind-Value="newUser.FullName" class="form-control" />
+
+    <!-- Row 3: Status and Full Name -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label>Status*</label>
+            <InputSelect @bind-Value="newUser.Status" class="form-control">
+                <option value="">Select Status</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </InputSelect>
+        </div>
+        <div class="col-md-6">
+            <label>Full Name*</label>
+            <InputText @bind-Value="newUser.FullName" class="form-control" />
+        </div>
     </div>
-    <div class="form-group">
-        <label>Phone Number</label>
-        <InputText @bind-Value="newUser.PhoneNumber" class="form-control" />
+
+    <!-- Row 4: Address and Department -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label>Address</label>
+            <InputText @bind-Value="newUser.Address" class="form-control" />
+        </div>
+        <div class="col-md-6">
+            <label>Department</label>
+            <InputText @bind-Value="newUser.Department" class="form-control" />
+        </div>
     </div>
-    <button type="submit" class="btn btn-primary">Save</button>
-    <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+
+    <!-- Row 5: Phone Number and Date of Birth -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label>Phone Number</label>
+            <InputText @bind-Value="newUser.PhoneNumber" class="form-control" />
+        </div>
+        <div class="col-md-6">
+            <label>Date of Birth</label>
+            <InputDate @bind-Value="newUser.DateOfBirth" class="form-control" />
+        </div>
+    </div>
+
+    <!-- Buttons Row -->
+    <div class="row">
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+        </div>
+    </div>
 </EditForm>
