@@ -1,0 +1,49 @@
+﻿@page "/report-virus"
+@inject LayoutService LayoutService
+@code {
+    protected override void OnInitialized()
+    {
+        var breadcrumb = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem { Name = "Dashboard", Url = "/", IsActive = false },
+            new BreadcrumbItem { Name = "Report Virus", Url = "/report-virus", IsActive = true }
+        };
+
+        LayoutService.SetTitleAndBreadcrumb("Report Virus", breadcrumb);
+    }
+}
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script src="assets/js/report-virus.js"></script>
+<link rel="stylesheet" href="assets/css/report-virut.css" />
+
+<div>
+    <div class="row mb-20">
+        <h4>1. Number of PCs infected with viruses per day</h4>
+        <div class="col-6">
+            <h5 class="text-center">Internet</h5>
+            <canvas id="internetPC" width="400" height="100" aria-label="Internet PC" role="img"></canvas>
+        </div>
+        <div class="col-6">
+            <h5 class="text-center">Simax</h5>
+            <canvas id="simaxPC" width="400" height="100" aria-label="Simax PC" role="img"></canvas>
+        </div>
+    </div>
+    <div class="row mb-20">
+        <h4>2. Virus species</h4>
+        <div class="col-6">
+            <h5 class="text-center">Internet</h5>
+            <canvas id="internetVirusSpecies" width="400" height="100" aria-label="Internet Virus Species" role="img"></canvas>
+        </div>
+        <div class="col-6">
+            <h5 class="text-center">Simax</h5>
+            <canvas id="simaxVirusSpecies" width="400" height="100" aria-label="Simax Virus Species" role="img"></canvas>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <h4>2. Number of infected devices by department</h4>
+            <canvas id="devicesByDepartment" width="400" height="100" aria-label="Devices by department" role="img"></canvas>
+        </div>
+    </div>
+    
+</div>
