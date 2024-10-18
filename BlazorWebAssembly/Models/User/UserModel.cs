@@ -18,10 +18,10 @@ namespace BlazorWebAssembly.Models.User
         public string Email { get; set; }
 
         [Required]
-        public string Role { get; set; }
+        public int Role { get; set; }
 
         [Required]
-        public string Status { get; set; }
+        public int Status { get; set; }
 
         [Required]
         public string FullName { get; set; }

@@ -26,6 +26,7 @@
             <th scope="col">Email</th>
             <th scope="col">Full Name</th>
             <th scope="col">Phone Number</th>
+            <th scope="col">Action</th>
         </tr>
     </thead>
     <tbody>
@@ -39,6 +40,14 @@
                     <td>@user.Email</td>
                     <td>@user.FullName</td>
                     <td>@user.PhoneNumber</td>
+                    <td>
+                        <span style="cursor: pointer;" @onclick="() => EditUser(user.Id)">
+                            <i class="fa-regular fa-user-pen"></i>
+                        </span>
+                        <span style="cursor: pointer; margin-left: 10px;" @onclick="() => HideUser(user.Id)">
+                            <i class="fa-solid fa-eye-slash"></i>
+                        </span>
+                    </td>
                 </tr>
             }
         }
@@ -157,6 +166,78 @@
             {
                 // Xử lý nếu có lỗi xảy ra
                 Console.WriteLine("An error occurred while adding the user.");
+            }
+        }
+    }
+
+
+    private async Task EditUser(int userId)
+    {
+        var user = users.FirstOrDefault(u => u.Id == userId);
+        if (user == null)
+        {
+            Console.WriteLine("User not found");
+            return;
+        }
+
+        var options = new ModalOptions
+            {
+                DisableBackgroundCancel = true,
+                HideCloseButton = true,
+                Position = ModalPosition.Middle,
+                Size = ModalSize.ExtraLarge
+            };
+
+        var parameters = new ModalParameters();
+        parameters.Add("User", user);
+
+        var modal = ModalService.Show<EditUserModal>("Edit User", parameters, options);
+        var result = await modal.Result;
+
+        if (!result.Cancelled)
+        {
+            var updatedUser = (UserModel)result.Data;
+
+            // Cập nhật user trong danh sách
+            var success = await UserService.UpdateUserAsync(updatedUser);
+            if (success)
+            {
+                var index = users.FindIndex(u => u.Id == updatedUser.Id);
+                if (index >= 0)
+                {
+                    users[index] = updatedUser;
+                }
+                StateHasChanged();
+            }
+            else
+            {
+                Console.WriteLine("An error occurred while updating the user.");
+            }
+        }
+    }
+
+    private async Task HideUser(int userId)
+    {
+        var user = users.FirstOrDefault(u => u.Id == userId);
+        if (user == null)
+        {
+            Console.WriteLine("User not found");
+            return;
+        }
+
+        var confirm = await JS.InvokeAsync<bool>("confirm", $"Are you sure you want to hide user '{user.Username}'?");
+        if (confirm)
+        {
+            // Gọi API hoặc service để ẩn người dùng
+            var success = await UserService.HideUserAsync(userId);
+            if (success)
+            {
+                users.Remove(user);
+                StateHasChanged();
+            }
+            else
+            {
+                Console.WriteLine("An error occurred while hiding the user.");
             }
         }
     }
