@@ -1,9 +1,10 @@
 ﻿@page "/users"
 @inject LayoutService LayoutService
 @inject UserService UserService
+@using BlazorWebAssembly.Components.Modals
 @using BlazorWebAssembly.Models
 @implements IDisposable
-
+@inject Blazored.Modal.Services.IModalService ModalService
 
 <Toolbar FilterText="@filterText"
          OnFilterChanged="HandleFilterChanged"
@@ -128,12 +129,38 @@
         return Task.CompletedTask;
     }
 
-    private Task CreateNewUser()
+    private async Task CreateNewUser()
     {
-        // Logic để tạo mới người dùng
-        Console.WriteLine("Creating a new user...");
-        return Task.CompletedTask;
+        var options = new ModalOptions
+            {
+                DisableBackgroundCancel = true,
+                HideCloseButton = true,
+                Position = ModalPosition.Middle,
+                Size = ModalSize.ExtraLarge
+            };
+
+        var modal = ModalService.Show<AddUserModal>("Add New User", options);
+
+        var result = await modal.Result;
+
+        if (!result.Cancelled)
+        {
+            var newUser = (UserModel)result.Data;
+
+            // Gọi UserService để thêm user mới
+            var success = await UserService.AddUserAsync(newUser);
+            if (success)
+            {
+                users.Add(newUser);
+            }
+            else
+            {
+                // Xử lý nếu có lỗi xảy ra
+                Console.WriteLine("An error occurred while adding the user.");
+            }
+        }
     }
+
 
     public void Dispose()
     {

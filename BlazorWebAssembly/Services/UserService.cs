@@ -154,5 +154,13 @@ namespace BlazorWebAssembly.Services
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadFromJsonAsync<UserListResponse>();
         }
+
+        public async Task<bool> AddUserAsync(UserModel newUser)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/auth/register", newUser);
+
+            // Kiểm tra nếu API trả về thành công (status code 200-299)
+            return response.IsSuccessStatusCode;
+        }
     }
 }

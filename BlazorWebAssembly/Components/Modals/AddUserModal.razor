@@ -1,0 +1,43 @@
+﻿@inject Blazored.Modal.Services.IModalService ModalService
+@using Blazored.Modal
+@code {
+    private UserModel newUser = new UserModel();
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+    private async Task Save()
+    {
+        // Đóng modal và trả về kết quả với dữ liệu user mới
+        // await ModalReference.CloseAsync(ModalResult.Ok(newUser));
+        await BlazoredModal.CloseAsync(ModalResult.Ok(newUser));
+    }
+
+    private async Task Cancel()
+    {
+        // Đóng modal mà không có kết quả (hủy bỏ modal)
+        // await ModalReference.CloseAsync(ModalResult.Cancel());
+        await BlazoredModal.CancelAsync();
+    }
+}
+
+<EditForm Model="newUser" OnValidSubmit="Save">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label>Username</label>
+        <InputText @bind-Value="newUser.Username" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Email</label>
+        <InputText @bind-Value="newUser.Email" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Full Name</label>
+        <InputText @bind-Value="newUser.FullName" class="form-control" />
+    </div>
+    <div class="form-group">
+        <label>Phone Number</label>
+        <InputText @bind-Value="newUser.PhoneNumber" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+</EditForm>
