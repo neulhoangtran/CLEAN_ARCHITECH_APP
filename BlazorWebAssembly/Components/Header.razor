@@ -1,4 +1,6 @@
-﻿<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+﻿@inject AuthenticationStateService AuthService
+
+<nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <!-- Navbar Brand-->
     <a class="navbar-brand p-3" href="/">
         <img src="/assets/images/logo.png" width="150" class="img-fluid ms-2 d-block" alt="logo" />
@@ -19,11 +21,18 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#!">Settings</a></li>
-                <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                <li><a class="dropdown-item" href="/profile">Edit Profile</a></li>
                 <li><hr class="dropdown-divider" /></li>
-                <li><a class="dropdown-item" href="#!">Logout</a></li>
+                <li><a class="dropdown-item" @onclick="Logout">Logout</a></li>
             </ul>
         </li>
     </ul>
 </nav>
+
+@code {
+
+    private async Task Logout()
+    {
+        await AuthService.MarkUserAsLoggedOut();
+    }
+}
