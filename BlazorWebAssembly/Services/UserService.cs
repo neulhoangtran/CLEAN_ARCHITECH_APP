@@ -162,5 +162,40 @@ namespace BlazorWebAssembly.Services
             // Kiểm tra nếu API trả về thành công (status code 200-299)
             return response.IsSuccessStatusCode;
         }
+
+        // Method to hide a user by ID
+        public async Task<bool> HideUserAsync(int userId)
+        {
+            try
+            {
+                var response = await _httpClient.PostAsync($"/api/user/hide/{userId}", null);
+
+                // Check if the API returned a success status code
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, $"Error hiding user with ID {userId}: {ex.Message}");
+                return false;
+            }
+        }
+
+        // Method to update a user's information
+        public async Task<bool> UpdateUserAsync(UserModel updatedUser)
+        {
+            try
+            {
+                var response = await _httpClient.PutAsJsonAsync($"/api/user/update/{updatedUser.Id}", updatedUser);
+
+                // Check if the API returned a success status code
+                return response.IsSuccessStatusCode;
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogError(ex, $"Error updating user with ID {updatedUser.Id}: {ex.Message}");
+                return false;
+            }
+        }
+
     }
 }

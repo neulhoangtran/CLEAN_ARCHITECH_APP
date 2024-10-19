@@ -1,0 +1,104 @@
+﻿@using Blazored.Modal
+@using Blazored.Modal.Services
+@using System.ComponentModel.DataAnnotations
+@using BlazorWebAssembly.Models
+@inject Blazored.Modal.Services.IModalService ModalService
+
+@code {
+    [Parameter] public UserModel User { get; set; } = new UserModel();
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    private async Task Save()
+    {
+        // Close modal and return the updated user as the result
+        await BlazoredModal.CloseAsync(ModalResult.Ok(User));
+    }
+
+    private async Task Cancel()
+    {
+        // Close modal without any result
+        await BlazoredModal.CancelAsync();
+    }
+}
+
+<EditForm Model="User" OnValidSubmit="Save">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <!-- Row 1: Username and Employee ID -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label>Username*</label>
+            <InputText @bind-Value="User.Username" class="form-control" />
+        </div>
+        <div class="col-md-6">
+            <label>Employee ID*</label>
+            <InputText @bind-Value="User.EmployeeId" class="form-control" />
+        </div>
+    </div>
+
+    <!-- Row 2: Email and Role -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label>Email*</label>
+            <InputText @bind-Value="User.Email" class="form-control" type="email" />
+        </div>
+        <div class="col-md-6">
+            <label>Role*</label>
+            <InputSelect @bind-Value="User.Role" class="form-control">
+                <option value="">Select Role</option>
+                <option value="Admin">Admin</option>
+                <option value="User">User</option>
+                <option value="Manager">Manager</option>
+            </InputSelect>
+        </div>
+    </div>
+
+    <!-- Row 3: Status and Full Name -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label>Status*</label>
+            <InputSelect @bind-Value="User.Status" class="form-control">
+                <option value="">Select Status</option>
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </InputSelect>
+        </div>
+        <div class="col-md-6">
+            <label>Full Name*</label>
+            <InputText @bind-Value="User.FullName" class="form-control" />
+        </div>
+    </div>
+
+    <!-- Row 4: Address and Department -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label>Address</label>
+            <InputText @bind-Value="User.Address" class="form-control" />
+        </div>
+        <div class="col-md-6">
+            <label>Department</label>
+            <InputText @bind-Value="User.Department" class="form-control" />
+        </div>
+    </div>
+
+    <!-- Row 5: Phone Number and Date of Birth -->
+    <div class="row mb-3">
+        <div class="col-md-6">
+            <label>Phone Number</label>
+            <InputText @bind-Value="User.PhoneNumber" class="form-control" />
+        </div>
+        <div class="col-md-6">
+            <label>Date of Birth</label>
+            <InputDate @bind-Value="User.DateOfBirth" class="form-control" />
+        </div>
+    </div>
+
+    <!-- Buttons Row -->
+    <div class="row">
+        <div class="col-12">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" @onclick="Cancel">Cancel</button>
+        </div>
+    </div>
+</EditForm>

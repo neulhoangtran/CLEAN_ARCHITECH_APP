@@ -5,6 +5,7 @@
 @using BlazorWebAssembly.Models
 @implements IDisposable
 @inject Blazored.Modal.Services.IModalService ModalService
+@inject IJSRuntime JS
 
 <Toolbar FilterText="@filterText"
          OnFilterChanged="HandleFilterChanged"
@@ -241,6 +242,8 @@
             }
         }
     }
+
+    
 
 
     public void Dispose()
