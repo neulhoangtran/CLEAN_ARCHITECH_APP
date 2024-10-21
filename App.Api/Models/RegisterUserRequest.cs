@@ -1,4 +1,6 @@
-﻿namespace App.Api.Models
+﻿using App.Domain.Entities;
+
+namespace App.Api.Models
 {
     public class RegisterUserRequest
     {
@@ -12,11 +14,11 @@
             get => _email;
             set => _email = RemoveSpecialCharacters(value);
         }
-        public string Password
-        {
-            get => _password;
-            set => _password = RemoveSpecialCharacters(value); // Có thể thêm mã hóa mật khẩu sau khi loại bỏ ký tự đặc biệt
-        }
+        //public string Password
+        //{
+        //    get => _password;
+        //    set => _password = RemoveSpecialCharacters(value); // Có thể thêm mã hóa mật khẩu sau khi loại bỏ ký tự đặc biệt
+        //}
 
         public string EmployeeId { get; set; }
         public int? Role { get; set; }
@@ -24,11 +26,12 @@
         public string? FullName { get; set; } // Có thể null
         public string? Address { get; set; } // Có thể null
 
+        public UserStatus Status { get; set; }
 
         // Field backing
         private string _username;
         private string _email;
-        private string _password;
+        //private string _password;
 
         // Hàm loại bỏ ký tự đặc biệt
         private string RemoveSpecialCharacters(string input)

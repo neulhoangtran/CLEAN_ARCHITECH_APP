@@ -44,7 +44,7 @@ namespace App.Application.Services
                 userDto.Username,
                 userDto.EmployeeId,
                 userDto.Email,
-                HashPassword(userDto.PasswordHash),
+                HashPassword("Admin@123"),
                 userDto.Status,
                 userDto.FullName,
                 userDto.Address,

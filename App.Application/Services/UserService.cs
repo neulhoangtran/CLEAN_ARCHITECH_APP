@@ -80,8 +80,7 @@ namespace App.Application.Services
             // Cập nhật Role nếu có sự thay đổi
             if (userDto.Role > 0)
             {
-                user.UserRoles.Clear(); // Xóa các role cũ
-                user.UserRoles.Add(new UserRole { RoleID = userDto.Role, UserID = userId });
+                user.UserRole = userDto.Role;
             }
 
             // Cập nhật thông tin người dùng trong repository

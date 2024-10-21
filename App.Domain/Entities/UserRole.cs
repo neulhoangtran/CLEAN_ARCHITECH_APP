@@ -7,5 +7,12 @@
 
         public int RoleID { get; set; } // Khóa ngoại liên kết với bảng Role
         public Role Role { get; set; } // Quan hệ 1-n với bảng Role
+
+        public UserRole() { }
+        public UserRole(int UserId, int role) { 
+            UserID = UserId;
+            RoleID = role;
+        }
+
     }
 }

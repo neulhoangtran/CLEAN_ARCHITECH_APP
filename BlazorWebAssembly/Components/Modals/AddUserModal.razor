@@ -21,18 +21,20 @@
 
 <EditForm Model="newUser" OnValidSubmit="Save">
     <DataAnnotationsValidator />
-    <ValidationSummary />
 
     <!-- Row 1: Username and Employee ID -->
     <div class="row mb-3">
         <div class="col-md-6">
             <label>Username*</label>
             <InputText @bind-Value="newUser.Username" class="form-control" />
+            <ValidationMessage For="@(() => newUser.Username)" class="invalid-feedback d-block" />
         </div>
         <div class="col-md-6">
-            <label>Employee ID*</label>
-            <InputText @bind-Value="newUser.EmployeeId" class="form-control" />
+            <label>Full Name*</label>
+            <InputText @bind-Value="newUser.FullName" class="form-control" />
+            <ValidationMessage For="@(() => newUser.FullName)" class="invalid-feedback d-block" />
         </div>
+        
     </div>
 
     <!-- Row 2: Email and Role -->
@@ -40,15 +42,16 @@
         <div class="col-md-6">
             <label>Email*</label>
             <InputText @bind-Value="newUser.Email" class="form-control" type="email" />
+            <ValidationMessage For="@(() => newUser.Email)" class="invalid-feedback d-block" />
         </div>
         <div class="col-md-6">
             <label>Role*</label>
             <InputSelect @bind-Value="newUser.Role" class="form-control">
                 <option value="">Select Role</option>
-                <option value="Admin">Admin</option>
-                <option value="User">User</option>
-                <option value="Manager">Manager</option>
+                <option value="1">Admin</option>
+                <option selected value="2">Employee</option>
             </InputSelect>
+            <ValidationMessage For="@(() => newUser.Role)" class="invalid-feedback d-block" />
         </div>
     </div>
 
@@ -58,13 +61,16 @@
             <label>Status*</label>
             <InputSelect @bind-Value="newUser.Status" class="form-control">
                 <option value="">Select Status</option>
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
+                <option selected value="1">Active</option>
+                <option value="2">Inactive</option>
+                <option value="2">Block</option>
             </InputSelect>
+            <ValidationMessage For="@(() => newUser.Status)" class="invalid-feedback d-block" />
         </div>
         <div class="col-md-6">
-            <label>Full Name*</label>
-            <InputText @bind-Value="newUser.FullName" class="form-control" />
+            <label>Employee ID*</label>
+            <InputText @bind-Value="newUser.EmployeeId" class="form-control" />
+            <ValidationMessage For="@(() => newUser.Username)" class="invalid-feedback d-block" />
         </div>
     </div>
 

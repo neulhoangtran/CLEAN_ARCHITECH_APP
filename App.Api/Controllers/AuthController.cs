@@ -35,11 +35,12 @@ namespace App.Api.Controllers
                     Username = request.Username,
                     Email = request.Email,
                     EmployeeId = request.EmployeeId,
-                    PasswordHash = request.Password, // Giả sử password đã được hash trong service
                     PhoneNumber = request.PhoneNumber, // Giá trị có thể null
                     FullName = request.FullName, // Giá trị có thể null
                     Address = request.Address, // Giá trị có thể null
-                    Role = request.Role ?? 2
+                    Role = request.Role ?? 1,
+                    Status = request.Status,
+                    
                     //PhoneNumber = request.PhoneNumber,
                     //FullName = request.FullName,
                     //Address = request.Address

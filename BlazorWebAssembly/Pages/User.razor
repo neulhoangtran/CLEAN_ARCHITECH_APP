@@ -157,6 +157,9 @@
         {
             var newUser = (UserModel)result.Data;
 
+            newUser.Status = 1;
+            newUser.Role = 2;
+
             // Gọi UserService để thêm user mới
             var success = await UserService.AddUserAsync(newUser);
             if (success)
