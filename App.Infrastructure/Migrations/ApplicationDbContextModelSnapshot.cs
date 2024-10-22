@@ -64,119 +64,119 @@ namespace App.Infrastructure.Migrations
                         new
                         {
                             ID = 1,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8691),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4378),
                             Description = "View user list",
                             Group = "User",
                             PermissionName = "User_View",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8691)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4379)
                         },
                         new
                         {
                             ID = 2,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8693),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4381),
                             Description = "Add new user",
                             Group = "User",
                             PermissionName = "User_Add",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8694)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4381)
                         },
                         new
                         {
                             ID = 3,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8695),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4383),
                             Description = "Edit user information",
                             Group = "User",
                             PermissionName = "User_Edit",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8696)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4383)
                         },
                         new
                         {
                             ID = 4,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8698),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4385),
                             Description = "Delete user",
                             Group = "User",
                             PermissionName = "User_Delete",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8698)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4385)
                         },
                         new
                         {
                             ID = 5,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8713),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4398),
                             Description = "Add new role",
                             Group = "Role",
                             PermissionName = "Role_Add",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8713)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4398)
                         },
                         new
                         {
                             ID = 6,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8715),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4400),
                             Description = "Edit role",
                             Group = "Role",
                             PermissionName = "Role_Edit",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8715)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4400)
                         },
                         new
                         {
                             ID = 7,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8717),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4402),
                             Description = "Delete role",
                             Group = "Role",
                             PermissionName = "Role_Delete",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8717)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4402)
                         },
                         new
                         {
                             ID = 8,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8730),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4416),
                             Description = "View checklist list",
                             Group = "Checklist",
                             PermissionName = "Checklist_View",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8731)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4417)
                         },
                         new
                         {
                             ID = 9,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8732),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4418),
                             Description = "Assign employees to shifts",
                             Group = "Checklist",
                             PermissionName = "Checklist_AssignShift",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8733)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4419)
                         },
                         new
                         {
                             ID = 10,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8734),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4420),
                             Description = "Confirm shifts",
                             Group = "Checklist",
                             PermissionName = "Checklist_ConfirmShift",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8735)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4420)
                         },
                         new
                         {
                             ID = 11,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8746),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4432),
                             Description = "View reports",
                             Group = "Report",
                             PermissionName = "Report_View",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8747)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4432)
                         },
                         new
                         {
                             ID = 12,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8757),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4442),
                             Description = "View daily logs",
                             Group = "DailyLog",
                             PermissionName = "DailyLog_View",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8757)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4442)
                         },
                         new
                         {
                             ID = 13,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8767),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4452),
                             Description = "Modify system settings",
                             Group = "Settings",
                             PermissionName = "Settings_Modify",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8768)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4452)
                         });
                 });
 
@@ -213,16 +213,16 @@ namespace App.Infrastructure.Migrations
                         new
                         {
                             ID = 1,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8592),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4252),
                             RoleName = "Administrator",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8595)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4253)
                         },
                         new
                         {
                             ID = 2,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8597),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4255),
                             RoleName = "Employee",
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8598)
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4256)
                         });
                 });
 
@@ -334,12 +334,12 @@ namespace App.Infrastructure.Migrations
                         new
                         {
                             ID = 1,
-                            CreatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8600),
+                            CreatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4262),
                             Email = "admin@example.com",
                             EmployeeId = "ADMIN001",
                             PasswordHash = "3b612c75a7b5048a435fb6ec81e52ff92d6d795a8b5a9c17070f6a63c97a53b2",
                             Status = 1,
-                            UpdatedAt = new DateTime(2024, 10, 17, 2, 1, 21, 296, DateTimeKind.Utc).AddTicks(8600),
+                            UpdatedAt = new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4262),
                             Username = "admin"
                         });
                 });
@@ -402,6 +402,9 @@ namespace App.Infrastructure.Migrations
 
                     b.HasIndex("RoleID");
 
+                    b.HasIndex("UserID")
+                        .IsUnique();
+
                     b.ToTable("Role_User", (string)null);
 
                     b.HasData(
@@ -462,8 +465,8 @@ namespace App.Infrastructure.Migrations
                         .IsRequired();
 
                     b.HasOne("App.Domain.Entities.User", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserID")
+                        .WithOne("UserRole")
+                        .HasForeignKey("App.Domain.Entities.UserRole", "UserID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -491,7 +494,8 @@ namespace App.Infrastructure.Migrations
                     b.Navigation("UserProfile")
                         .IsRequired();
 
-                    b.Navigation("UserRoles");
+                    b.Navigation("UserRole")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
