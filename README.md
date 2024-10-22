@@ -5,8 +5,13 @@ dotnet ef migrations add CreateUserDatabase -p App.Infrastructure/App.Infrastruc
 // create database base on migration
 dotnet ef database update -p App.Infrastructure/App.Infrastructure.csproj -s App.Api/App.Api.csproj
 
-// remmove all 
+// remove last migration
+dotnet ef migrations remove -p App.Infrastructure/App.Infrastructure.csproj -s App.Api/App.Api.csproj
+
+
+// rollback
 dotnet ef database update 0 -p App.Infrastructure/App.Infrastructure.csproj -s App.Api/App.Api.csproj
+
 
 <pre>
 /MySolution.sln                       // Solution chính chứa tất cả các project
