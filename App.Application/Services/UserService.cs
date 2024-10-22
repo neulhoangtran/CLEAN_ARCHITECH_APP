@@ -80,7 +80,7 @@ namespace App.Application.Services
             // Cập nhật Role nếu có sự thay đổi
             if (userDto.Role > 0)
             {
-                user.UserRole = userDto.Role;
+                user.UserRole.RoleID = userDto.Role;
             }
 
             // Cập nhật thông tin người dùng trong repository

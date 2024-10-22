@@ -72,7 +72,7 @@ namespace App.Infrastructure.Persistence
         public async Task<Paginate<User>> GetPaginatedUsersAsync(int pageIndex, int pageSize, string sortBy = null, string filter = null)
         {
             var query = _context.Users.Include(u => u.UserProfile) // Nạp thông tin UserProfile
-                                .Include(u => u.UserRoles) // Nạp thông tin các UserRole
+                                .Include(u => u.UserRole) // Nạp thông tin các UserRole
                                 .AsQueryable();
 
             // Nếu có tham số lọc, thêm điều kiện lọc
@@ -114,7 +114,7 @@ namespace App.Infrastructure.Persistence
         {
             // Sử dụng linq để lấy danh sách người dùng có roleId tương ứng
             return await _context.Users
-                                 .Where(u => u.UserRoles.Any(ur => ur.RoleID == roleId))
+                                 .Where(u => u.UserRole != null && u.UserRole.RoleID == roleId) // Kiểm tra trực tiếp thuộc tính UserRole
                                  .Include(u => u.UserProfile) // Gộp cả thông tin UserProfile
                                  .ToListAsync();
         }

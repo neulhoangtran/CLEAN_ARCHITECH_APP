@@ -163,8 +163,8 @@ namespace App.Infrastructure.Persistence
                 entity.HasKey(ur => new { ur.UserID, ur.RoleID });
 
                 entity.HasOne(ur => ur.User)
-                      .WithMany(u => u.UserRoles)
-                      .HasForeignKey(ur => ur.UserID)
+                      .WithOne(u => u.UserRole) // Đặt quan hệ 1-1 với bảng User
+                       .HasForeignKey<UserRole>(ur => ur.UserID)
                       .OnDelete(DeleteBehavior.Cascade); // Xóa User sẽ xóa luôn UserRoles liên quan
 
                 entity.HasOne(ur => ur.Role)
