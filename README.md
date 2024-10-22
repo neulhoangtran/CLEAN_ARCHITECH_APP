@@ -1,8 +1,17 @@
 # CLEAN_ARCHITECH_APP
+# create user database
+dotnet ef migrations add CreateUserDatabase -p App.Infrastructure/App.Infrastructure.csproj -s App.Api/App.Api.csproj
 
-dotnet ef migrations add InitialCreateDatabase -p App.Infrastructure/App.Infrastructure.csproj -s App.Api/App.Api.csproj
-
+# create database base on migration
 dotnet ef database update -p App.Infrastructure/App.Infrastructure.csproj -s App.Api/App.Api.csproj
+
+# remove last migration
+dotnet ef migrations remove -p App.Infrastructure/App.Infrastructure.csproj -s App.Api/App.Api.csproj
+
+
+# rollback
+dotnet ef database update 0 -p App.Infrastructure/App.Infrastructure.csproj -s App.Api/App.Api.csproj
+
 
 <pre>
 /MySolution.sln                       // Solution chính chứa tất cả các project
