@@ -22,7 +22,7 @@ namespace App.Application.Services
             return permissions.Select(p => new PermissionDto
             {
                 ID = p.ID,
-                Name = p.PermissionName,
+                Name = p.Name,
                 Description = p.Description
             }).ToList();
         }
@@ -35,7 +35,7 @@ namespace App.Application.Services
             return new PermissionDto
             {
                 ID = permission.ID,
-                Name = permission.PermissionName,
+                Name = permission.Name,
                 Description = permission.Description
             };
         }
@@ -47,7 +47,7 @@ namespace App.Application.Services
 
             var permission = new Permission
             {
-                PermissionName = permissionName,
+                Name = permissionName,
                 Description = description
             };
             _permissionRepository.Add(permission);
@@ -60,7 +60,7 @@ namespace App.Application.Services
             if (permission == null)
                 throw new Exception("Permission not found");
 
-            permission.PermissionName = permissionName;
+            permission.Name = permissionName;
             permission.Description = description;
             _permissionRepository.Update(permission);
             _permissionRepository.SaveChanges();

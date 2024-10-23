@@ -8,11 +8,26 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Identity\" />
-    <Folder Include="Messaging\" />
-    <Folder Include="Configurations\" />
+    <Compile Remove="Configurations\**" />
+    <Compile Remove="Identity\**" />
+    <Compile Remove="Messaging\**" />
+    <Compile Remove="Services\**" />
+    <Content Remove="Configurations\**" />
+    <Content Remove="Identity\**" />
+    <Content Remove="Messaging\**" />
+    <Content Remove="Services\**" />
+    <EmbeddedResource Remove="Configurations\**" />
+    <EmbeddedResource Remove="Identity\**" />
+    <EmbeddedResource Remove="Messaging\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Configurations\**" />
+    <None Remove="Identity\**" />
+    <None Remove="Messaging\**" />
+    <None Remove="Services\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Migrations\" />
-    <Folder Include="Services\" />
   </ItemGroup>
 
   <ItemGroup>

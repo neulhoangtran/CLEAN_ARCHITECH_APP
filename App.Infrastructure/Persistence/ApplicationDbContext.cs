@@ -11,9 +11,11 @@ namespace App.Infrastructure.Persistence
     public class ApplicationDbContext : DbContext
     {
         // Định nghĩa các DbSet cho các thực thể
+
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Permission> Permissions { get; set; }
+        public DbSet<PermissionCategory> PermissionCategories { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<RolePermission> RolePermissions { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
@@ -122,12 +124,25 @@ namespace App.Infrastructure.Persistence
             {
                 entity.HasKey(e => e.ID);
 
-                entity.HasIndex(e => e.PermissionName)
+                entity.HasIndex(e => e.Name)
                       .IsUnique();
 
-                entity.Property(e => e.PermissionName)
+                entity.Property(e => e.Name)
                       .IsRequired()
                       .HasMaxLength(100);
+
+                entity.Property(e => e.Description)
+                      .HasMaxLength(300);
+            });
+
+
+            // Cấu hình cho PermissionCategory
+            modelBuilder.Entity<PermissionCategory>(entity =>
+            {
+                entity.HasKey(e => e.ID);
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Description).HasMaxLength(300);
+                entity.Property(e => e.Order).HasDefaultValue(1); // Đặt giá trị mặc định là 1
             });
 
             // Cấu hình cho thực thể Role
@@ -216,41 +231,30 @@ namespace App.Infrastructure.Persistence
             modelBuilder.Entity<UserRole>().HasData(userRole);
 
 
-            // Seed permissions for User group
-            modelBuilder.Entity<Permission>().HasData(
-                new Permission { ID = 1, PermissionName = "User_View", Description = "View user list", Group = "User", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Permission { ID = 2, PermissionName = "User_Add", Description = "Add new user", Group = "User", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Permission { ID = 3, PermissionName = "User_Edit", Description = "Edit user information", Group = "User", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Permission { ID = 4, PermissionName = "User_Delete", Description = "Delete user", Group = "User", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+            modelBuilder.Entity<PermissionCategory>().HasData(
+                new PermissionCategory { ID = 1, Name = "User", Description = "Manage user permissions", Order = 10 },
+                new PermissionCategory { ID = 2, Name = "Role", Description = "Manage role permissions", Order = 20 },
+                new PermissionCategory { ID = 3, Name = "Checklist", Description = "Manage checklist permissions", Order = 30 },
+                new PermissionCategory { ID = 4, Name = "Report Virus", Description = "Manage report permissions", Order = 40 },
+                new PermissionCategory { ID = 5, Name = "Meeting", Description = "Manage meeting permissions", Order = 50 },
+                new PermissionCategory { ID = 6, Name = "License", Description = "Manage license permissions", Order = 60 },
+                new PermissionCategory { ID = 7, Name = "Contract & Bill", Description = "Manage contract and bill permissions", Order = 70 },
+                new PermissionCategory { ID = 8, Name = "Settings Management", Description = "Manage settings permissions", Order = 80 }
             );
 
-            // Seed permissions for Role group
+            // Seed Permissions và liên kết với PermissionCategory tương ứng
             modelBuilder.Entity<Permission>().HasData(
-                new Permission { ID = 5, PermissionName = "Role_Add", Description = "Add new role", Group = "Role", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Permission { ID = 6, PermissionName = "Role_Edit", Description = "Edit role", Group = "Role", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Permission { ID = 7, PermissionName = "Role_Delete", Description = "Delete role", Group = "Role", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
-            );
+                // User Management Permissions
+                new Permission { ID = 1, Name = "User_View", Description = "View user list", PermissionCategoryID = 1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Permission { ID = 2, Name = "User_Add", Description = "Add new user", PermissionCategoryID = 1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Permission { ID = 3, Name = "User_Edit", Description = "Edit user information", PermissionCategoryID = 1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Permission { ID = 4, Name = "User_Delete", Description = "Delete user", PermissionCategoryID = 1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
 
-            // Seed permissions for Checklist group
-            modelBuilder.Entity<Permission>().HasData(
-                new Permission { ID = 8, PermissionName = "Checklist_View", Description = "View checklist list", Group = "Checklist", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Permission { ID = 9, PermissionName = "Checklist_AssignShift", Description = "Assign employees to shifts", Group = "Checklist", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-                new Permission { ID = 10, PermissionName = "Checklist_ConfirmShift", Description = "Confirm shifts", Group = "Checklist", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
-            );
+                // Role Management Permissions
+                new Permission { ID = 5, Name = "Role_Add", Description = "Add new role", PermissionCategoryID = 2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Permission { ID = 6, Name = "Role_Edit", Description = "Edit role", PermissionCategoryID = 2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
+                new Permission { ID = 7, Name = "Role_Delete", Description = "Delete role", PermissionCategoryID = 2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
 
-            // Seed permissions for Report group
-            modelBuilder.Entity<Permission>().HasData(
-                new Permission { ID = 11, PermissionName = "Report_View", Description = "View reports", Group = "Report", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
-            );
-
-            // Seed permissions for DailyLog group
-            modelBuilder.Entity<Permission>().HasData(
-                new Permission { ID = 12, PermissionName = "DailyLog_View", Description = "View daily logs", Group = "DailyLog", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
-            );
-
-            // Seed permissions for Settings group
-            modelBuilder.Entity<Permission>().HasData(
-                new Permission { ID = 13, PermissionName = "Settings_Modify", Description = "Modify system settings", Group = "Settings", CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
             );
         }
 

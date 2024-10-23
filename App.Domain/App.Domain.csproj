@@ -8,8 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ValueObjects\**" />
+    <Content Remove="ValueObjects\**" />
+    <EmbeddedResource Remove="ValueObjects\**" />
+    <None Remove="ValueObjects\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Entities\CheckList\" />
     <Folder Include="Events\Role\" />
-    <Folder Include="ValueObjects\" />
   </ItemGroup>
 
 </Project>

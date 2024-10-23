@@ -14,20 +14,20 @@ namespace App.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Permissions",
+                name: "PermissionCategories",
                 columns: table => new
                 {
                     ID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PermissionName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Group = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false, defaultValue: 1),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Permissions", x => x.ID);
+                    table.PrimaryKey("PK_PermissionCategories", x => x.ID);
                 });
 
             migrationBuilder.CreateTable(
@@ -65,25 +65,24 @@ namespace App.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Role_Permission",
+                name: "Permissions",
                 columns: table => new
                 {
-                    RoleID = table.Column<int>(type: "int", nullable: false),
-                    PermissionID = table.Column<int>(type: "int", nullable: false)
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: false),
+                    PermissionCategoryID = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Role_Permission", x => new { x.RoleID, x.PermissionID });
+                    table.PrimaryKey("PK_Permissions", x => x.ID);
                     table.ForeignKey(
-                        name: "FK_Role_Permission_Permissions_PermissionID",
-                        column: x => x.PermissionID,
-                        principalTable: "Permissions",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Role_Permission_Roles_RoleID",
-                        column: x => x.RoleID,
-                        principalTable: "Roles",
+                        name: "FK_Permissions_PermissionCategories_PermissionCategoryID",
+                        column: x => x.PermissionCategoryID,
+                        principalTable: "PermissionCategories",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -161,24 +160,43 @@ namespace App.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Role_Permission",
+                columns: table => new
+                {
+                    RoleID = table.Column<int>(type: "int", nullable: false),
+                    PermissionID = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Role_Permission", x => new { x.RoleID, x.PermissionID });
+                    table.ForeignKey(
+                        name: "FK_Role_Permission_Permissions_PermissionID",
+                        column: x => x.PermissionID,
+                        principalTable: "Permissions",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Role_Permission_Roles_RoleID",
+                        column: x => x.RoleID,
+                        principalTable: "Roles",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
-                table: "Permissions",
-                columns: new[] { "ID", "CreatedAt", "Description", "Group", "PermissionName", "UpdatedAt" },
+                table: "PermissionCategories",
+                columns: new[] { "ID", "CreatedAt", "Description", "Name", "Order", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4378), "View user list", "User", "User_View", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4379) },
-                    { 2, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4381), "Add new user", "User", "User_Add", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4381) },
-                    { 3, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4383), "Edit user information", "User", "User_Edit", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4383) },
-                    { 4, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4385), "Delete user", "User", "User_Delete", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4385) },
-                    { 5, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4398), "Add new role", "Role", "Role_Add", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4398) },
-                    { 6, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4400), "Edit role", "Role", "Role_Edit", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4400) },
-                    { 7, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4402), "Delete role", "Role", "Role_Delete", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4402) },
-                    { 8, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4416), "View checklist list", "Checklist", "Checklist_View", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4417) },
-                    { 9, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4418), "Assign employees to shifts", "Checklist", "Checklist_AssignShift", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4419) },
-                    { 10, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4420), "Confirm shifts", "Checklist", "Checklist_ConfirmShift", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4420) },
-                    { 11, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4432), "View reports", "Report", "Report_View", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4432) },
-                    { 12, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4442), "View daily logs", "DailyLog", "DailyLog_View", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4442) },
-                    { 13, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4452), "Modify system settings", "Settings", "Settings_Modify", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4452) }
+                    { 1, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4556), "Manage user permissions", "User", 10, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4556) },
+                    { 2, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4560), "Manage role permissions", "Role", 20, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4560) },
+                    { 3, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4561), "Manage checklist permissions", "Checklist", 30, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4561) },
+                    { 4, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4562), "Manage report permissions", "Report Virus", 40, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4563) },
+                    { 5, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4564), "Manage meeting permissions", "Meeting", 50, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4564) },
+                    { 6, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4565), "Manage license permissions", "License", 60, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4565) },
+                    { 7, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4566), "Manage contract and bill permissions", "Contract & Bill", 70, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4567) },
+                    { 8, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4568), "Manage settings permissions", "Settings Management", 80, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4568) }
                 });
 
             migrationBuilder.InsertData(
@@ -186,14 +204,28 @@ namespace App.Infrastructure.Migrations
                 columns: new[] { "ID", "CreatedAt", "RoleName", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4252), "Administrator", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4253) },
-                    { 2, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4255), "Employee", new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4256) }
+                    { 1, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4390), "Administrator", new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4393) },
+                    { 2, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4395), "Employee", new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4395) }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "ID", "CreatedAt", "Email", "EmployeeId", "PasswordHash", "Status", "UpdatedAt", "Username" },
-                values: new object[] { 1, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4262), "admin@example.com", "ADMIN001", "3b612c75a7b5048a435fb6ec81e52ff92d6d795a8b5a9c17070f6a63c97a53b2", 1, new DateTime(2024, 10, 22, 10, 2, 1, 596, DateTimeKind.Utc).AddTicks(4262), "admin" });
+                values: new object[] { 1, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4397), "admin@example.com", "ADMIN001", "3b612c75a7b5048a435fb6ec81e52ff92d6d795a8b5a9c17070f6a63c97a53b2", 1, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4397), "admin" });
+
+            migrationBuilder.InsertData(
+                table: "Permissions",
+                columns: new[] { "ID", "CreatedAt", "Description", "Name", "PermissionCategoryID", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4598), "View user list", "User_View", 1, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4599) },
+                    { 2, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4601), "Add new user", "User_Add", 1, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4601) },
+                    { 3, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4603), "Edit user information", "User_Edit", 1, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4603) },
+                    { 4, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4605), "Delete user", "User_Delete", 1, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4605) },
+                    { 5, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4607), "Add new role", "Role_Add", 2, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4607) },
+                    { 6, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4609), "Edit role", "Role_Edit", 2, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4609) },
+                    { 7, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4610), "Delete role", "Role_Delete", 2, new DateTime(2024, 10, 23, 17, 19, 42, 673, DateTimeKind.Utc).AddTicks(4611) }
+                });
 
             migrationBuilder.InsertData(
                 table: "Role_User",
@@ -201,10 +233,15 @@ namespace App.Infrastructure.Migrations
                 values: new object[] { 1, 1 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Permissions_PermissionName",
+                name: "IX_Permissions_Name",
                 table: "Permissions",
-                column: "PermissionName",
+                column: "Name",
                 unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Permissions_PermissionCategoryID",
+                table: "Permissions",
+                column: "PermissionCategoryID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Role_Permission_PermissionID",
@@ -269,6 +306,9 @@ namespace App.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "Users");
+
+            migrationBuilder.DropTable(
+                name: "PermissionCategories");
         }
     }
 }
