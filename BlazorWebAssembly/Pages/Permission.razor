@@ -10,44 +10,48 @@
     {
         @foreach (var category in permissionCategories)
         {
-            <h3>@category.Name</h3>
-            <p>@category.Description</p>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Permission Name</th>
-                        <th>Description</th>
-                        <th style="text-align: right;">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (category.Permissions != null && category.Permissions.Any())
-                    {
-                        @foreach (var permission in category.Permissions)
+            <div class="card shadow mb-3">
+                <div class="card-body">
+                <h5>@category.Name</h5>
+                <p>@category.Description</p>
+                <table class="table mb-4">
+                    <thead class="thead-dark">
+                        <tr class="table-active">
+                            <th style="width: 20%;">Permission Name</th>
+                            <th style="width: 50%;">Description</th>
+                            <th style="width: 30%; text-align: right;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (category.Permissions != null && category.Permissions.Any())
+                        {
+                            @foreach (var permission in category.Permissions)
+                            {
+                                <tr>
+                                    <td>@permission.Name</td>
+                                    <td>@permission.Description</td>
+                                    <td style="text-align: right;">
+                                        <button class="btn btn-outline-secondary me-2" style="font-size: 13px;" @onclick="() => DeletePermission(permission.ID)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+
+                                        <button class="btn btn-outline-primary btn-sm" style="font-size: 13px; min-height: 33px" @onclick="() => EditPermission(permission.ID)">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
                         {
                             <tr>
-                                <td>@permission.Name</td>
-                                <td>@permission.Description</td>
-                                <td style="text-align: right;">
-                                    <button class="btn btn-outline-secondary me-2" style="font-size: 13px;" @onclick="() => DeletePermission(permission.ID)">
-                                        <i class="fa fa-trash"></i> Delete
-                                    </button>
-
-                                    <button class="btn btn-outline-primary btn-sm" style="font-size: 13px; min-height: 33px" @onclick="() => EditPermission(permission.ID)">
-                                        <i class="fa fa-edit"></i> Edit
-                                    </button>
-                                </td>
+                                <td colspan="3" class="text-left">No permissions found for this category.</td>
                             </tr>
                         }
-                    }
-                    else
-                    {
-                        <tr>
-                            <td colspan="3" class="text-center">No permissions found for this category.</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
         }
     }
     else

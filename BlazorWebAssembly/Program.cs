@@ -20,6 +20,7 @@ builder.Services.AddScoped<LayoutService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RoleService>();
 builder.Services.AddScoped<PermissionService>();
+builder.Services.AddScoped<MeetingService>();
 
 // Đăng ký dịch vụ Blazored.LocalStorage
 builder.Services.AddBlazoredLocalStorage();
