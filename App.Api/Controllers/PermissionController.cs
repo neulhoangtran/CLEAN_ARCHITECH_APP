@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using App.Api.Models.Permission;
 using App.Application.Interfaces;
+using System.Threading.Tasks;
 
-[Route("api/[controller]")]
+[Route("api/permission")]
 [ApiController]
 public class PermissionController : ControllerBase
 {
@@ -14,30 +15,30 @@ public class PermissionController : ControllerBase
     }
 
     [HttpGet]
-    public IActionResult GetAllPermissions()
+    public async Task<IActionResult> GetAllPermissions()
     {
-        var permissions = _permissionService.GetAllPermissions();
+        var permissions = await _permissionService.GetPermissionsGroupedByCategoryAsync();
         return Ok(permissions);
     }
 
     [HttpPost]
-    public IActionResult CreatePermission([FromBody] CreatePermissionRequest request)
+    public async Task<IActionResult> CreatePermission([FromBody] CreatePermissionRequest request)
     {
-        _permissionService.CreatePermission(request.Name, request.Description);
+        await _permissionService.CreatePermissionAsync(request.Name, request.Description);
         return Ok(new { Message = "Permission created successfully" });
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdatePermission(int id, [FromBody] UpdatePermissionRequest request)
+    public async Task<IActionResult> UpdatePermission(int id, [FromBody] UpdatePermissionRequest request)
     {
-        _permissionService.UpdatePermission(id, request.Name, request.Description);
+        await _permissionService.UpdatePermissionAsync(id, request.Name, request.Description);
         return Ok(new { Message = "Permission updated successfully" });
     }
 
     [HttpDelete("{id}")]
-    public IActionResult DeletePermission(int id)
+    public async Task<IActionResult> DeletePermission(int id)
     {
-        _permissionService.DeletePermission(id);
+        await _permissionService.DeletePermissionAsync(id);
         return Ok(new { Message = "Permission deleted successfully" });
     }
 }

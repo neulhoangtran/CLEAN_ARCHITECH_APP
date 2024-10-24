@@ -4,6 +4,7 @@ using App.Domain.Entities;
 using App.Domain.Repositories;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace App.Application.Services
 {
@@ -16,9 +17,36 @@ namespace App.Application.Services
             _permissionRepository = permissionRepository;
         }
 
-        public IEnumerable<PermissionDto> GetAllPermissions()
+        public async Task<IEnumerable<PermissionCategoryDto>> GetPermissionsGroupedByCategoryAsync()
         {
-            var permissions = _permissionRepository.GetAll();
+            var permissions = await _permissionRepository.GetAllCategoriesWithPermissionsAsync();
+
+            // Đảm bảo permissions không null
+            if (permissions == null || !permissions.Any())
+            {
+                return new List<PermissionCategoryDto>();
+            }
+
+            var result = permissions.Select(c => new PermissionCategoryDto
+            {
+                CategoryID = c.ID,
+                CategoryName = c.Name,
+                CategoryDescription = c.Description,
+                CategoryOrder = c.Order,
+                Permissions = c.Permissions.Select(p => new PermissionDto
+                {
+                    ID = p.ID,
+                    Name = p.Name,
+                    Description = p.Description
+                }).ToList()
+            }).ToList();
+
+            return result;
+        }
+
+        public async Task<IEnumerable<PermissionDto>> GetAllPermissionsAsync()
+        {
+            var permissions = await _permissionRepository.GetAllAsync();
             return permissions.Select(p => new PermissionDto
             {
                 ID = p.ID,
@@ -27,9 +55,9 @@ namespace App.Application.Services
             }).ToList();
         }
 
-        public PermissionDto GetPermissionById(int permissionId)
+        public async Task<PermissionDto> GetPermissionByIdAsync(int permissionId)
         {
-            var permission = _permissionRepository.GetById(permissionId);
+            var permission = await _permissionRepository.GetByIdAsync(permissionId);
             if (permission == null) return null;
 
             return new PermissionDto
@@ -40,9 +68,10 @@ namespace App.Application.Services
             };
         }
 
-        public void CreatePermission(string permissionName, string description)
+        public async Task CreatePermissionAsync(string permissionName, string description)
         {
-            if (_permissionRepository.GetByName(permissionName) != null)
+            var existingPermission = await _permissionRepository.GetByNameAsync(permissionName);
+            if (existingPermission != null)
                 throw new Exception("Permission already exists");
 
             var permission = new Permission
@@ -50,30 +79,30 @@ namespace App.Application.Services
                 Name = permissionName,
                 Description = description
             };
-            _permissionRepository.Add(permission);
-            _permissionRepository.SaveChanges();
+            await _permissionRepository.AddAsync(permission);
+            await _permissionRepository.SaveChangesAsync();
         }
 
-        public void UpdatePermission(int permissionId, string permissionName, string description)
+        public async Task UpdatePermissionAsync(int permissionId, string permissionName, string description)
         {
-            var permission = _permissionRepository.GetById(permissionId);
+            var permission = await _permissionRepository.GetByIdAsync(permissionId);
             if (permission == null)
                 throw new Exception("Permission not found");
 
             permission.Name = permissionName;
             permission.Description = description;
             _permissionRepository.Update(permission);
-            _permissionRepository.SaveChanges();
+            await _permissionRepository.SaveChangesAsync();
         }
 
-        public void DeletePermission(int permissionId)
+        public async Task DeletePermissionAsync(int permissionId)
         {
-            var permission = _permissionRepository.GetById(permissionId);
+            var permission = await _permissionRepository.GetByIdAsync(permissionId);
             if (permission == null)
                 throw new Exception("Permission not found");
 
             _permissionRepository.Delete(permission);
-            _permissionRepository.SaveChanges();
+            await _permissionRepository.SaveChangesAsync();
         }
     }
 }

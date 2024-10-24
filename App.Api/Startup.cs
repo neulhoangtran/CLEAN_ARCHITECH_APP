@@ -53,10 +53,15 @@ namespace App.Api
             services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IRoleRepository, RoleRepository>();
 
+            // Đăng ký Permission 
+            services.AddScoped<IPermissionRepository, PermissionRepository>();
+            services.AddScoped<IPermissionService, PermissionService>();
+
             // Đăng ký EventBus và Event Handlers
             services.AddSingleton<IEventBus, InMemoryEventBus>();   // Đăng ký InMemoryEventBus
             services.AddTransient<UserRegisteredEventHandler>();    // Đăng ký UserRegisteredEventHandler
             services.AddTransient<UserDeletedEventHandler>();       // Đăng ký UserDeletedEventHandler
+
 
             // Đăng ký Controllers
             services.AddControllers();

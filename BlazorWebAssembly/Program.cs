@@ -19,6 +19,7 @@ Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
 builder.Services.AddScoped<LayoutService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<RoleService>();
+builder.Services.AddScoped<PermissionService>();
 
 // Đăng ký dịch vụ Blazored.LocalStorage
 builder.Services.AddBlazoredLocalStorage();

@@ -1,0 +1,103 @@
+﻿@page "/permission"
+@inject PermissionService PermissionService
+@implements IDisposable
+@inject IJSRuntime JSRuntime
+@inject NavigationManager NavigationManager
+@inject LayoutService LayoutService
+
+<div class="permission-management">
+    @if (permissionCategories != null && permissionCategories.Any())
+    {
+        @foreach (var category in permissionCategories)
+        {
+            <h3>@category.Name</h3>
+            <p>@category.Description</p>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Permission Name</th>
+                        <th>Description</th>
+                        <th style="text-align: right;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (category.Permissions != null && category.Permissions.Any())
+                    {
+                        @foreach (var permission in category.Permissions)
+                        {
+                            <tr>
+                                <td>@permission.Name</td>
+                                <td>@permission.Description</td>
+                                <td style="text-align: right;">
+                                    <button class="btn btn-outline-secondary me-2" style="font-size: 13px;" @onclick="() => DeletePermission(permission.ID)">
+                                        <i class="fa fa-trash"></i> Delete
+                                    </button>
+
+                                    <button class="btn btn-outline-primary btn-sm" style="font-size: 13px; min-height: 33px" @onclick="() => EditPermission(permission.ID)">
+                                        <i class="fa fa-edit"></i> Edit
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center">No permissions found for this category.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+    else
+    {
+        <p>No permissions available.</p>
+    }
+
+</div>
+
+@code {
+    private List<PermissionGroupModel> permissionCategories = new List<PermissionGroupModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var breadcrumb = new List<BreadcrumbItem>
+        {
+            new BreadcrumbItem { Name = "Dashboard", Url = "/", IsActive = false },
+            new BreadcrumbItem { Name = "Permission", Url = "/profile", IsActive = true }
+        };
+        LayoutService.SetTitleAndBreadcrumb("Permission", breadcrumb);
+
+        await LoadPermissionsAsync();
+    }
+
+
+
+    private async Task LoadPermissionsAsync()
+    {
+        var response = await PermissionService.GetPermissionsGroupedByCategoryAsync();
+
+        // Luôn nhận được một danh sách hợp lệ (có thể là danh sách rỗng)
+        permissionCategories = response ?? new List<PermissionGroupModel>();
+    }
+
+    private void EditPermission(int permissionId)
+    {
+        NavigationManager.NavigateTo($"/permission/edit/{permissionId}");
+    }
+
+    private async Task DeletePermission(int permissionId)
+    {
+        bool confirmDelete = await JSRuntime.InvokeAsync<bool>("confirm", $"Are you sure you want to delete this permission?");
+        if (confirmDelete)
+        {
+            await PermissionService.DeletePermissionAsync(permissionId);
+            await LoadPermissionsAsync();
+        }
+    }
+
+    public void Dispose()
+    {
+    }
+}
